@@ -1,0 +1,100 @@
+# Copyright(c) 2021 aasaam software development group
+version: "3"
+
+services:
+  sms-gateway-api:
+    container_name: sms-gateway-api
+    depends_on:
+      - sms-gateway-mariadb
+    image: node:15-buster-slim
+    working_dir: /app/api
+    volumes:
+      # development
+      - ./app/api:/app/api
+
+      # cache
+      - ./tmp/.npm:/root/.npm
+    environment:
+      ASM_PUBLIC_APP_TEST: "true"
+      ASM_PUBLIC_APP_TITLE: "SMS Gateway"
+      ASM_AUTH_COOKIE: "AuthToken"
+      ASM_AUTH_HMAC_SECRET: "random-and-secure-hmac-string-for-sign-and-verify"
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-mariadb-db}
+      MYSQL_USER: ${MYSQL_USER:-mariadb-user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-mariadb-password}
+    command: tail -f /dev/null
+
+  sms-gateway-cp:
+    container_name: sms-gateway-cp
+    depends_on:
+      - sms-gateway-api
+    image: node:15-buster-slim
+    working_dir: /app/cp
+
+    volumes:
+      # development
+      - ./app/cp:/app/cp
+
+      # cache
+      - ./tmp/.npm:/root/.npm
+    command: tail -f /dev/null
+
+  sms-gateway-nginx:
+    container_name: sms-gateway-nginx
+    image: nginx:1
+    depends_on:
+      - sms-gateway-api
+    ports:
+      - 18888:80
+    environment:
+      ASM_NGINX_WORKER_PROCESSES: ${ASM_NGINX_WORKER_PROCESSES:-2}
+      ASM_NGINX_WORKER_RLIMIT_NOFILE: ${ASM_NGINX_WORKER_RLIMIT_NOFILE:-1024}
+      ASM_NGINX_WORKER_CONNECTIONS: ${ASM_NGINX_WORKER_CONNECTIONS:-512}
+      ASM_NGINX_ERROR_LOG_LEVEL: ${ASM_NGINX_ERROR_LOG_LEVEL:-debug}
+      ASM_NGINX_TMPFS_CACHE_SIZE_MB: ${ASM_NGINX_TMPFS_CACHE_SIZE_MB:-128}
+      ASM_NGINX_LARGE_CACHE_SIZE_MB: ${ASM_NGINX_LARGE_CACHE_SIZE_MB:-2048}
+      ASM_NGINX_LIMIT_CONNECTION: ${ASM_NGINX_LIMIT_CONNECTION:-8}
+      ASM_NGINX_LIMIT_RPS: ${ASM_NGINX_LIMIT_RPS:-4}
+      ASM_NGINX_LIMIT_RATE_KBS: ${ASM_NGINX_LIMIT_RATE_KBS:-32}
+      ASM_NGINX_LIMIT_BURST: ${ASM_NGINX_LIMIT_BURST:-32}
+      ASM_NGINX_LIMIT_RATE_AFTER_MB: ${ASM_NGINX_LIMIT_RATE_AFTER_MB:-1}
+      ASM_APP_PORT: ${ASM_APP_PORT:-3001}
+      ASM_TUSD_PORT: ${ASM_TUSD_PORT:-1080}
+
+      # public
+      ASM_PUBLIC_APP_NS: ${ASM_PUBLIC_APP_NS:-test}
+      ASM_PUBLIC_BASE_URL: ${ASM_PUBLIC_BASE_URL:-/}
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/mime.types:/etc/nginx/mime.types:ro
+      - ./nginx/common-server.conf:/etc/nginx/common-server.conf:ro
+      - ./nginx/common-proxy.conf:/etc/nginx/common-proxy.conf:ro
+      - ./nginx/common-http.conf:/etc/nginx/common-http.conf:ro
+      - ./nginx/common-protected.conf:/etc/nginx/common-protected.conf:ro
+      - ./nginx/templates/default.dev.conf.template:/etc/nginx/templates/default.conf.template:ro
+
+  ################
+  # Dependencies #
+  ################
+  sms-gateway-mariadb:
+    container_name: sms-gateway-mariadb
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-mariadb-db}
+      MYSQL_USER: ${MYSQL_USER:-mariadb-user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-mariadb-password}
+      MYSQL_RANDOM_ROOT_PASSWORD: "true"
+    image: mariadb:10
+
+  ##########
+  # Web UI #
+  ##########
+
+  sms-gateway-adminer:
+    container_name: sms-gateway-adminer
+    depends_on:
+      - sms-gateway-mariadb
+    image: adminer
+    environment:
+      ADMINER_DEFAULT_SERVER: sms-gateway-mariadb
+    ports:
+      - 18889:8080

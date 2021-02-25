@@ -1,0 +1,33 @@
+worker_processes ${ASM_NGINX_WORKER_PROCESSES};
+
+worker_rlimit_nofile ${ASM_NGINX_WORKER_RLIMIT_NOFILE};
+
+error_log /dev/stdout ${ASM_NGINX_ERROR_LOG_LEVEL};
+
+events {
+  worker_connections ${ASM_NGINX_WORKER_CONNECTIONS};
+  use epoll;
+  multi_accept on;
+}
+
+http {
+
+  access_log off;
+
+  include /etc/nginx/common-http.conf;
+
+  server {
+    listen 80 default_server;
+
+    server_name _;
+
+    include /etc/nginx/common-server.conf;
+
+    # backend
+    location ${ASM_PUBLIC_BASE_URL} {
+      include /etc/nginx/common-proxy.conf;
+      include /etc/nginx/common-protected.conf;
+      proxy_pass http://sms-gateway-api:${ASM_APP_PORT};
+    }
+  }
+}

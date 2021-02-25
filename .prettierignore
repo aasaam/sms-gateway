@@ -1,0 +1,11 @@
+# Copyright(c) 2021 aasaam software development group
+# api
+app/api/node_modules/
+app/api/coverage/
+
+# cp
+app/cp/app.html
+app/cp/.nuxt/
+app/cp/dist/
+app/cp/coverage/
+app/cp/node_modules/

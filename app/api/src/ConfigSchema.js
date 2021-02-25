@@ -1,0 +1,152 @@
+const validator = require('validator').default;
+
+const TEST_MODE = validator.toBoolean(process.env.ASM_PUBLIC_APP_TEST, true);
+
+/** @type {import('json-schema').JSONSchema7} */
+const ConfigSchema = {
+  type: 'object',
+  required: [
+    // public
+    'ASM_PUBLIC_APP_TEST',
+    'ASM_PUBLIC_APP_TITLE',
+    'ASM_PUBLIC_BASE_URL',
+
+    // private
+    'ASM_PM_ID',
+    'ASM_APP_INSTANCE',
+    'ASM_APP_PORT',
+    'ASM_AUTH_COOKIE',
+    'ASM_AUTH_USER_API_KEY',
+    'ASM_AUTH_HMAC_SECRET',
+    'ASM_AUTH_HMAC_ALG',
+    'ASM_LOG_LEVEL',
+
+    // resource
+    'ASM_MYSQL_DATABASE',
+    'ASM_MYSQL_USER',
+    'ASM_MYSQL_PASSWORD',
+    'ASM_MYSQL_HOST',
+  ],
+  properties: {
+    ASM_ADMIN_USERNAME: {
+      type: 'string',
+      description: 'Administrator user name',
+      default: 'root',
+    },
+
+    ASM_PM_ID: {
+      type: 'number',
+      description: 'PM2 process identifier',
+      default: 0,
+      minimum: 0,
+    },
+
+    ASM_PUBLIC_APP_TITLE: {
+      type: 'string',
+      description: 'Application title',
+      default: 'SMS Gateway',
+    },
+
+    ASM_PUBLIC_APP_TEST: {
+      type: 'boolean',
+      description: 'Application is in testing mode',
+      default: false,
+    },
+
+    ASM_PUBLIC_LOCAL_ONLY: {
+      type: 'boolean',
+      description:
+        'Just local only adapter active other will be deactivate for test purpose',
+      default: false,
+    },
+
+    ASM_ADAPTERS: {
+      type: 'string',
+      description: 'List of possible adapters',
+      // @ts-ignore
+      separator: ',',
+      default: 'local,melipayamak',
+    },
+
+    ASM_PUBLIC_BASE_URL: {
+      type: 'string',
+      description: 'Base URL of application. Example: `/` or `/base-path/`',
+      default: '/',
+    },
+
+    ASM_AUTH_COOKIE: {
+      type: 'string',
+      description: 'Authentication cookie name',
+      default: TEST_MODE ? 'AuthToken' : '__Host-AuthToken',
+    },
+
+    ASM_AUTH_USER_SECRET_KEY: {
+      type: 'string',
+      description: 'Header that carry the stored user secret.',
+      default: 'x-user-secret-key',
+    },
+
+    ASM_AUTH_HMAC_ALG: {
+      type: 'string',
+      description: 'Application authentication HMAC algorithm',
+      default: 'HS256',
+      enum: ['HS256', 'HS384', 'HS512'],
+    },
+
+    ASM_AUTH_HMAC_SECRET: {
+      type: 'string',
+      description: 'Application authentication HMAC secret',
+      default: TEST_MODE ? '00000000000000000000000000000000' : '',
+      minLength: 32,
+      maxLength: 512,
+    },
+
+    ASM_AUTH_USER_API_KEY: {
+      type: 'string',
+      description: 'Header that carry the stored user token.',
+      default: 'x-user-api-key',
+    },
+
+    ASM_APP_PORT: {
+      type: 'number',
+      description: 'Application HTTP port',
+      default: 3001,
+      minimum: 1025,
+      maximum: 49151,
+    },
+
+    ASM_APP_INSTANCE: {
+      type: 'number',
+      description: 'Application cluster number',
+      default: 2,
+      minimum: 1,
+      maximum: 16,
+    },
+
+    ASM_MYSQL_DATABASE: {
+      type: 'string',
+      description: 'MySQL/MariaDB database',
+      default: 'mariadb-db',
+    },
+
+    ASM_MYSQL_USER: {
+      type: 'string',
+      description: 'MySQL/MariaDB username',
+      default: 'mariadb-user',
+    },
+
+    ASM_MYSQL_PASSWORD: {
+      type: 'string',
+      description: 'MySQL/MariaDB password',
+      default: 'mariadb-password',
+    },
+
+    ASM_MYSQL_HOST: {
+      type: 'string',
+      description: 'MySQL/MariaDB host',
+      default: 'sms-gateway-mariadb',
+    },
+  },
+};
+
+module.exports = { ConfigSchema };

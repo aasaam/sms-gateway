@@ -1,0 +1,19 @@
+defaults
+not Android > 0
+not Baidu > 0
+not BlackBerry > 0
+not Edge > 0
+not Electron > 0
+not Explorer > 0
+not ExplorerMobile > 0
+not iOS > 0
+not Opera > 0
+not OperaMini > 0
+not OperaMobile > 0
+not QQAndroid > 0
+not Safari > 0
+not Samsung > 0
+not UCAndroid > 0
+not kaios > 0
+
+node >= 14
