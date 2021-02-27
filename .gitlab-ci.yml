@@ -12,9 +12,6 @@ variables:
   TEST_CI_NAMESPACE: sms-gateway
 
 before_script:
-  - git checkout main
-  - git fetch --all
-  - git reset --hard origin/main
   - docker login --username=$DOCKER_HUB_USER --password=$DOCKER_HUB_PASS
 
 test:
