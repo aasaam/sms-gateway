@@ -37,9 +37,14 @@ test:
         -e MYSQL_RANDOM_ROOT_PASSWORD="true" \
         -d mariadb:10
 
-    # run ci
+    # check directory
     - |
       ls -la
+      ls -la $(pwd)/app
+      echo $(pwd)/app
+
+    # run ci
+    - |
       docker run --name $TEST_CI_NAMESPACE --network=$TEST_CI_NAMESPACE \
         -e ASM_PUBLIC_APP_TEST='true' \
         -v $(pwd)/app:/app \
