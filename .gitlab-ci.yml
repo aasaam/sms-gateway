@@ -39,6 +39,7 @@ test:
 
     # run ci
     - |
+      ls -la
       docker run --name $TEST_CI_NAMESPACE --network=$TEST_CI_NAMESPACE \
         -e ASM_PUBLIC_APP_TEST='true' \
         -v $(pwd)/app:/app \
