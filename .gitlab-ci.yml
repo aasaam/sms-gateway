@@ -11,12 +11,15 @@ variables:
   DOCKER_DRIVER: overlay2
   TEST_CI_NAMESPACE: sms-gateway
 
+before_script:
+  - docker login --username=$DOCKER_HUB_USER --password=$DOCKER_HUB_PASS
+
 test:
   stage: test
   script:
     # gc
-    - docker stop $TEST_CI_NAMESPACE-mariadb || true
-    - docker rm $TEST_CI_NAMESPACE-mariadb || true
+    - docker stop $TEST_CI_NAMESPACE $TEST_CI_NAMESPACE-mariadb || true
+    - docker rm $TEST_CI_NAMESPACE $TEST_CI_NAMESPACE-mariadb || true
     - docker network rm $TEST_CI_NAMESPACE || true
 
     # network
@@ -42,15 +45,14 @@ test:
         node:15-buster-slim /app/api/ci.sh
 
     # gc
-    - docker stop $TEST_CI_NAMESPACE-mariadb || true
-    - docker rm $TEST_CI_NAMESPACE-mariadb || true
+    - docker stop $TEST_CI_NAMESPACE $TEST_CI_NAMESPACE-mariadb || true
+    - docker rm $TEST_CI_NAMESPACE $TEST_CI_NAMESPACE-mariadb || true
     - docker network rm $TEST_CI_NAMESPACE || true
   coverage: '/TOTAL_COVERAGE_FOR_CI_F: \d+\.\d+/'
 
 build:
   stage: build
   script:
-    - docker login --username=$DOCKER_HUB_USER --password=$DOCKER_HUB_PASS
     # build
     - docker build -f Dockerfile -t aasaam/sms-gateway .
     # push
