@@ -4,7 +4,7 @@ set -e
 
 cd /app/api
 
-# npm install
+npm install
 
 npm run lint
 
