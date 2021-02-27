@@ -3,7 +3,7 @@ const { envSchema } = require('env-schema');
 class Config {
   /**
    * @param {Object} schema
-   * @param {Object} envObject
+   * @param {Object.<string, string>} envObject
    */
   constructor(schema, envObject) {
     /** @private */

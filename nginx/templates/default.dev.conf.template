@@ -25,7 +25,7 @@ http {
 
     include /etc/nginx/common-server.conf;
 
-    # frontend: panel
+    # cp
     location ${ASM_PUBLIC_BASE_URL} {
       include /etc/nginx/common-proxy.conf;
       # include /etc/nginx/common-protected.conf;
@@ -33,7 +33,7 @@ http {
       proxy_pass http://sms-gateway-cp:3001;
     }
 
-    # backend
+    # api
     location ${ASM_PUBLIC_BASE_URL}api {
       proxy_read_timeout 4h;
       include /etc/nginx/common-proxy.conf;

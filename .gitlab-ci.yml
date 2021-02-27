@@ -1,0 +1,58 @@
+image: docker:stable
+
+services:
+  - docker:dind
+
+stages:
+  - test
+  - build
+
+variables:
+  DOCKER_DRIVER: overlay2
+  TEST_CI_NAMESPACE: sms-gateway
+
+test:
+  stage: test
+  script:
+    # gc
+    - docker stop $TEST_CI_NAMESPACE-mariadb || true
+    - docker rm $TEST_CI_NAMESPACE-mariadb || true
+    - docker network rm $TEST_CI_NAMESPACE || true
+
+    # network
+    - docker network create $TEST_CI_NAMESPACE
+
+    ################
+    # Dependencies #
+    ################
+    # mariadb
+    - |
+      docker run --name $TEST_CI_NAMESPACE-mariadb --network=$TEST_CI_NAMESPACE \
+        -e MYSQL_DATABASE="mariadb-d" \
+        -e MYSQL_USER="mariadb-user" \
+        -e MYSQL_PASSWORD="mariadb-password" \
+        -e MYSQL_RANDOM_ROOT_PASSWORD="true" \
+        -d mariadb:10
+
+    # run ci
+    - |
+      docker run --name $TEST_CI_NAMESPACE --network=$TEST_CI_NAMESPACE \
+        -e ASM_PUBLIC_APP_TEST='true' \
+        node:15-buster-slim /app/api/ci.sh
+
+    # gc
+    - docker stop $TEST_CI_NAMESPACE-mariadb || true
+    - docker rm $TEST_CI_NAMESPACE-mariadb || true
+    - docker network rm $TEST_CI_NAMESPACE || true
+  coverage: '/TOTAL_COVERAGE_FOR_CI_F: \d+\.\d+/'
+
+build:
+  stage: build
+  script:
+    - docker login --username=$DOCKER_HUB_USER --password=$DOCKER_HUB_PASS
+    # build
+    - docker build -f Dockerfile -t aasaam/sms-gateway .
+    # push
+    - docker push aasaam/sms-gateway
+    # remove image
+    - docker rmi aasaam/sms-gateway

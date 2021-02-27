@@ -2,20 +2,18 @@ const { resolve } = require('path');
 
 const { createContainer, asValue, asClass, Lifetime } = require('awilix');
 
-const { Config: ConfigClass } = require('./Config');
-const { ConfigSchema } = require('./ConfigSchema');
 const InitSequelize = require('./InitSequelize');
+const InitData = require('./InitData');
 
 /**
+ * @param {import('./Config').Config} Config
  * @return {Promise<import('awilix').AwilixContainer>}
  */
-const initContainer = async () => {
+const initContainer = async (Config) => {
   const container = createContainer();
 
-  const configInstance = new ConfigClass(ConfigSchema, process.env);
-
   container.register({
-    Config: asValue(configInstance.getAll()),
+    Config: asValue(Config.getAll()),
   });
 
   // Sequelize
@@ -27,31 +25,30 @@ const initContainer = async () => {
       },
     }),
   });
-  const sequelize = await container.resolve('Sequelize').connect();
+  const Sequelize = container.resolve('Sequelize');
+
+  await Sequelize.sync();
+  const sequelize = await Sequelize.connect();
+
+  const entities = Sequelize.getEntities();
 
   container.register({
     // sequelize
     sequelize: asValue(sequelize),
   });
 
-  // Sequelize Models
-  container.loadModules([resolve(__dirname, 'Sequelize/*.js')], {
-    formatName(name) {
-      return `${name}Model`;
-    },
-    resolverOptions: {
+  Object.keys(entities).forEach((name) => {
+    container.register({
+      [name]: asValue(entities[`${name}`]),
+    });
+  });
+
+  // InitData
+  container.register({
+    InitData: asClass(InitData, {
       lifetime: Lifetime.SINGLETON,
-    },
+    }),
   });
-
-  const promises = [];
-  Object.keys(container.registrations).forEach((name) => {
-    if (name.match(/Model$/)) {
-      promises.push(container.resolve(name).sync());
-    }
-  });
-
-  await Promise.all(promises);
 
   container.loadModules([resolve(__dirname, 'Adapters/*.js')], {
     formatName(name) {
@@ -63,6 +60,20 @@ const initContainer = async () => {
   });
 
   container.loadModules([resolve(__dirname, 'Core/*.js')], {
+    resolverOptions: {
+      lifetime: Lifetime.SINGLETON,
+    },
+  });
+
+  container.register({
+    // fastify
+    fastify: asValue(container.resolve('Fastify').getFastify()),
+  });
+
+  container.loadModules([resolve(__dirname, 'OpenAPI/*.js')], {
+    formatName(name) {
+      return `${name}OpenAPI`;
+    },
     resolverOptions: {
       lifetime: Lifetime.SINGLETON,
     },

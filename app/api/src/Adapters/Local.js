@@ -2,28 +2,34 @@ class Local {
   constructor({ Config }) {
     this.name = this.constructor.name.toLocaleLowerCase();
     this.description = 'For testing local just show in panel for development';
+    this.port = Config.ASM_APP_PORT;
 
-    this.active = Config.ASM_PUBLIC_LOCAL_ONLY;
-
-    this.countries = [];
+    this.active = Config.ASM_PUBLIC_ADAPTERS.map((i) =>
+      i.trim().toLocaleLowerCase(),
+    ).includes(this.name);
   }
 
-  setUp({ country, to, text }) {
-    if (this.countries.length && !this.countries.includes(country)) {
+  /**
+   * @param {String} country
+   * @param {String} mobile
+   * @param {String} text
+   *
+   * @return  {Object|Boolean}
+   */
+  setUp({ mobile, message }) {
+    if (!this.active) {
       return false;
     }
-    const body = new URLSearchParams();
-    body.append('text', text);
-    body.append('to', to);
     return {
       adapter: this.name,
-      url: 'http://127.0.0.1:3001/api/local-test',
+      url: `http://127.0.0.1:${this.port}/api/local-adapter`,
+      mode: 'json',
       fetch: {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          to,
-          text,
+          mobile,
+          message,
         }),
       },
     };
@@ -31,11 +37,19 @@ class Local {
 
   /**
    * @param {import('node-fetch').Response} response
+   * @returns {Promise<any>}
    */
   // eslint-disable-next-line class-methods-use-this
-  async success(response) {
-    const body = await response.json();
-    return response.status === 200 && body === true;
+  success({ status, headers, json }) {
+    const resp = {
+      status,
+      headers,
+      body: json,
+    };
+    return {
+      result: status === 200 && Number.isInteger(json),
+      resp,
+    };
   }
 }
 

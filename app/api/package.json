@@ -36,6 +36,12 @@
     ],
     "testEnvironment": "node"
   },
+  "scripts": {
+    "lint": "eslint .",
+    "start:dev": "nodemon",
+    "test:cover": "jest --detectOpenHandles --runInBand --collectCoverage",
+    "test": "jest --detectOpenHandles --runInBand"
+  },
   "devDependencies": {
     "@types/jest": "^26",
     "@types/json-schema": "^7",
@@ -52,6 +58,8 @@
     "eslint-plugin-sonarjs": "^0",
     "eslint-plugin-sql": "^1",
     "jest": "^26",
+    "json-schema": "^0.2.3",
+    "nodemon": "^2.0.7",
     "prettier": "^2",
     "typescript": "^4"
   },
@@ -64,9 +72,12 @@
     "cookie": "^0",
     "env-schema": "^2",
     "fastify": "^3",
+    "fastify-cookie": "^5",
     "fastify-oas": "^3",
     "fastify-rate-limit": "^5",
+    "fastify-static": "^3",
     "jose": "^3",
+    "libphonenumber-js": "^1",
     "lodash": "^4",
     "mariadb": "^2",
     "node-fetch": "^2",

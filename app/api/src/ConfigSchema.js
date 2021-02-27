@@ -16,10 +16,9 @@ const ConfigSchema = {
     'ASM_APP_INSTANCE',
     'ASM_APP_PORT',
     'ASM_AUTH_COOKIE',
-    'ASM_AUTH_USER_API_KEY',
+    'ASM_PUBLIC_AUTH_USER_API_KEY',
     'ASM_AUTH_HMAC_SECRET',
     'ASM_AUTH_HMAC_ALG',
-    'ASM_LOG_LEVEL',
 
     // resource
     'ASM_MYSQL_DATABASE',
@@ -28,12 +27,6 @@ const ConfigSchema = {
     'ASM_MYSQL_HOST',
   ],
   properties: {
-    ASM_ADMIN_USERNAME: {
-      type: 'string',
-      description: 'Administrator user name',
-      default: 'root',
-    },
-
     ASM_PM_ID: {
       type: 'number',
       description: 'PM2 process identifier',
@@ -47,20 +40,34 @@ const ConfigSchema = {
       default: 'SMS Gateway',
     },
 
+    ASM_ADMIN_USERNAME: {
+      type: 'string',
+      description: 'Administrator user name',
+      default: 'root',
+    },
+
+    ASM_DEFAULT_USERNAME: {
+      type: 'string',
+      description: 'Default user name',
+      default: 'default',
+    },
+
     ASM_PUBLIC_APP_TEST: {
       type: 'boolean',
       description: 'Application is in testing mode',
       default: false,
     },
 
-    ASM_PUBLIC_LOCAL_ONLY: {
-      type: 'boolean',
+    ASM_PUBLIC_LOCAL_FAILED_CHANCE: {
+      type: 'number',
       description:
-        'Just local only adapter active other will be deactivate for test purpose',
-      default: false,
+        'How is chance between 1 to n to fails will be simulate. If 10, so 1/10 equal 10 percent chance of failed',
+      minimum: 2,
+      maximum: 100,
+      default: 10,
     },
 
-    ASM_ADAPTERS: {
+    ASM_PUBLIC_ADAPTERS: {
       type: 'string',
       description: 'List of possible adapters',
       // @ts-ignore
@@ -74,16 +81,16 @@ const ConfigSchema = {
       default: '/',
     },
 
-    ASM_AUTH_COOKIE: {
+    ASM_PUBLIC_AUTH_COOKIE: {
       type: 'string',
       description: 'Authentication cookie name',
       default: TEST_MODE ? 'AuthToken' : '__Host-AuthToken',
     },
 
-    ASM_AUTH_USER_SECRET_KEY: {
-      type: 'string',
-      description: 'Header that carry the stored user secret.',
-      default: 'x-user-secret-key',
+    ASM_PUBLIC_AUTH_COOKIE_LIFETIME: {
+      type: 'number',
+      description: 'Lifetime of authentication token/cookie',
+      default: 14400,
     },
 
     ASM_AUTH_HMAC_ALG: {
@@ -96,12 +103,12 @@ const ConfigSchema = {
     ASM_AUTH_HMAC_SECRET: {
       type: 'string',
       description: 'Application authentication HMAC secret',
-      default: TEST_MODE ? '00000000000000000000000000000000' : '',
+      default: TEST_MODE ? '00000000000000000000000000000000' : ' ',
       minLength: 32,
       maxLength: 512,
     },
 
-    ASM_AUTH_USER_API_KEY: {
+    ASM_PUBLIC_AUTH_USER_API_KEY: {
       type: 'string',
       description: 'Header that carry the stored user token.',
       default: 'x-user-api-key',
@@ -125,26 +132,51 @@ const ConfigSchema = {
 
     ASM_MYSQL_DATABASE: {
       type: 'string',
-      description: 'MySQL/MariaDB database',
+      description: 'MariaDB database',
       default: 'mariadb-db',
     },
 
     ASM_MYSQL_USER: {
       type: 'string',
-      description: 'MySQL/MariaDB username',
+      description: 'MariaDB username',
       default: 'mariadb-user',
     },
 
     ASM_MYSQL_PASSWORD: {
       type: 'string',
-      description: 'MySQL/MariaDB password',
+      description: 'MariaDB password',
       default: 'mariadb-password',
     },
 
     ASM_MYSQL_HOST: {
       type: 'string',
-      description: 'MySQL/MariaDB host',
+      description: 'MariaDB host',
       default: 'sms-gateway-mariadb',
+    },
+
+    // MeliPayamak
+    ASM_MELIPAYAMAK_NUMBER: {
+      description: 'MeliPayamak send number',
+      type: 'string',
+    },
+    ASM_MELIPAYAMAK_USERNAME: {
+      description: 'MeliPayamak username',
+      type: 'string',
+    },
+    ASM_MELIPAYAMAK_PASSWORD: {
+      description: 'MeliPayamak password',
+      type: 'string',
+    },
+    ASM_MELIPAYAMAK_PRIORITY: {
+      description: 'MeliPayamak priority over other adapters',
+      type: 'string',
+    },
+    ASM_MELIPAYAMAK_COUNTRIES: {
+      description: 'MeliPayamak allowed send country',
+      type: 'string',
+      // @ts-ignore
+      separator: ',',
+      default: 'IR',
     },
   },
 };

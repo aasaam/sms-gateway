@@ -1,3 +1,4 @@
+const { to } = require('await-to-js');
 const { Organization } = require('@aasaam/information');
 
 const fastifyOpenAPI = require('fastify-oas');
@@ -23,9 +24,75 @@ class OpenAPI {
   /**
    * @param {import('fastify').FastifyInstance} fastify
    * @param {Object} container
+   * @param {import('sequelize').ModelCtor<import('sequelize').Model>} container.UserEntity
+   * @param {import('../JWT')} container.JWT
    */
   static setup(fastify, container) {
     OpenAPI.swaggerUI(fastify, container);
+
+    fastify.decorate(
+      'userApiKeyCheck',
+      /**
+       * @param {import('fastify').FastifyRequest} req
+       * @param {import('fastify').FastifyReply} reply
+       */
+      async (req, reply) => {
+        let found = false;
+        const apiKey =
+          req.headers[`${container.Config.ASM_PUBLIC_AUTH_USER_API_KEY}`] ||
+          req.query[container.Config.ASM_PUBLIC_AUTH_USER_API_KEY];
+        if (apiKey && apiKey.match(/^[a-z0-9]{16,}$/i)) {
+          const user = await container.UserEntity.findOne({
+            where: {
+              apiKey,
+              active: true,
+            },
+          });
+          if (user && user.name) {
+            req.raw.user = user.toJSON();
+            found = true;
+          }
+        }
+        if (found === false) {
+          const schemaError = new GenericResponse(403);
+          return schemaError.reply(reply);
+        }
+        return true;
+      },
+    );
+
+    fastify.decorate(
+      'userTokenCheck',
+      /**
+       * @param {import('fastify').FastifyRequest} req
+       * @param {import('fastify').FastifyReply} reply
+       */
+      async (req, reply) => {
+        const [, token] = await to(container.JWT.verifyFromRequest(req.raw));
+        if (token) {
+          req.raw.token = token;
+          return true;
+        }
+        const schemaError = new GenericResponse(403);
+        return schemaError.reply(reply);
+      },
+    );
+
+    fastify.decorate(
+      'adminTokenCheck',
+      /**
+       * @param {import('fastify').FastifyRequest} req
+       * @param {import('fastify').FastifyReply} reply
+       */
+      async (req, reply) => {
+        const [, token] = await to(container.JWT.verifyFromRequest(req.raw));
+        if (token && token.admin) {
+          return true;
+        }
+        const schemaError = new GenericResponse(403);
+        return schemaError.reply(reply);
+      },
+    );
   }
 
   /**
@@ -73,7 +140,7 @@ class OpenAPI {
             description: 'User secret',
             type: 'apiKey',
             in: 'header',
-            name: container.Config.ASM_AUTH_USER_SECRET_KEY,
+            name: container.Config.ASM_PUBLIC_AUTH_USER_API_KEY,
           },
         },
       },

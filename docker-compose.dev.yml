@@ -16,12 +16,6 @@ services:
       - ./tmp/.npm:/root/.npm
     environment:
       ASM_PUBLIC_APP_TEST: "true"
-      ASM_PUBLIC_APP_TITLE: "SMS Gateway"
-      ASM_AUTH_COOKIE: "AuthToken"
-      ASM_AUTH_HMAC_SECRET: "random-and-secure-hmac-string-for-sign-and-verify"
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-mariadb-db}
-      MYSQL_USER: ${MYSQL_USER:-mariadb-user}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-mariadb-password}
     command: tail -f /dev/null
 
   sms-gateway-cp:

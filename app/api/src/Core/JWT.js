@@ -9,7 +9,7 @@ const { default: jwtVerify } = require('jose/jwt/verify');
 class JWT {
   constructor({ Config }) {
     /** @private */
-    this.cookieName = Config.ASM_AUTH_COOKIE;
+    this.cookieName = Config.ASM_PUBLIC_AUTH_COOKIE;
 
     /** @private */
     this.secret = new TextEncoder().encode(Config.ASM_AUTH_HMAC_SECRET);
@@ -46,6 +46,7 @@ class JWT {
    */
   async verifyFromRequest(req) {
     let match = '';
+
     if (req.headers.cookie && req.headers.cookie.includes(this.cookieName)) {
       const parsedCookies = cookie.parse(req.headers.cookie);
       if (parsedCookies[this.cookieName]) {

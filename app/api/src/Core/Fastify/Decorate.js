@@ -16,18 +16,6 @@ class Decorate {
    */
   static baseURL(fastify, container) {
     fastify.decorate(
-      'baseURL',
-      /**
-       * @param {String} path
-       */
-      (path) =>
-        `${container.Config.ASM_PUBLIC_BASE_URL.replace(
-          /\/+$/g,
-          '',
-        )}/api${path}`,
-    );
-
-    fastify.decorate(
       'openAPIBaseURL',
       /**
        * @param {String} path
@@ -56,20 +44,6 @@ class Decorate {
       );
     });
 
-    // getFirstHeader
-    fastify.addHook('onRequest', async (req) => {
-      req.raw.getFirstHeader = function getFirstHeader(name) {
-        let head = this.headers[`${name}`];
-        if (head) {
-          if (Array.isArray(head)) {
-            [head] = head;
-          }
-          return head;
-        }
-        return '';
-      };
-    });
-
     fastify.addHook('onRequest', async (req) => {
       const payload = await container.JWT.verifyFromRequest(req.raw);
       if (payload) {
@@ -78,7 +52,7 @@ class Decorate {
 
       // get client ip
       req.raw.getClientIP = function getClientIP() {
-        return this.getFirstHeader('x-real-ip') || req.ip;
+        return req.headers['x-real-ip'] || req.ip;
       };
     });
   }
@@ -92,19 +66,14 @@ class Decorate {
       'setResponseCacheTTL',
       /**
        * @param {Number} ttl
-       * @param {Number} staleAddon
        */
-      function setResponseCacheTTL(ttl, staleAddon = 5) {
+      function setResponseCacheTTL(ttl) {
         const date = new Date();
         const expireDate = new Date();
         expireDate.setSeconds(expireDate.getSeconds() + ttl);
         this.header(
           'Cache-Control',
-          `max-age=${ttl}, stale-while-revalidate=${
-            ttl + staleAddon
-          }, stale-if-error=${
-            ttl + staleAddon
-          }, public, post-check=0, pre-check=0`,
+          `max-age=${ttl}, public, post-check=0, pre-check=0`,
         );
         this.header('Pragma', 'public');
         this.header('Last-Modified', date.toUTCString());

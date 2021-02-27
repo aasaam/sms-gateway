@@ -8,9 +8,10 @@ class RateLimit {
     /** @type {import('fastify-rate-limit').RateLimitPluginOptions} */
     const config = {
       global: false,
-      max: 10,
-      timeWindow: 5000,
-      cache: 10000,
+      max: 3,
+      ban: 2,
+      timeWindow: 1000 * 60,
+      cache: 1000 * 60 * 2,
       skipOnError: false,
       keyGenerator: (req) => req.raw.getClientIP(),
       addHeaders: {
