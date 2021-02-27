@@ -41,14 +41,15 @@ test:
     - |
       ls -la
       ls -la $(pwd)/app
+      ls -la $(pwd)/app/api
       echo $(pwd)/app
 
     # run ci
     - |
-      docker run --name $TEST_CI_NAMESPACE --network=$TEST_CI_NAMESPACE \
-        -e ASM_PUBLIC_APP_TEST='true' \
-        -v $(pwd)/app:/app \
-        node:15-buster-slim /app/api/ci.sh
+      docker run --name $TEST_CI_NAMESPACE --network=$TEST_CI_NAMESPACE -e ASM_PUBLIC_APP_TEST='true' -v $(pwd)/app:/app node:15-buster-slim ls /app || true
+      docker run --name $TEST_CI_NAMESPACE --network=$TEST_CI_NAMESPACE -e ASM_PUBLIC_APP_TEST='true' -v $(pwd)/app:/app node:15-buster-slim ls /app/api || true
+      docker run --name $TEST_CI_NAMESPACE --network=$TEST_CI_NAMESPACE -e ASM_PUBLIC_APP_TEST='true' -v $(pwd)/app:/app node:15-buster-slim ls /app/api/ci.sh
+      docker run --name $TEST_CI_NAMESPACE --network=$TEST_CI_NAMESPACE -e ASM_PUBLIC_APP_TEST='true' -v $(pwd)/app:/app node:15-buster-slim /app/api/ci.sh
 
     # gc
     - docker stop $TEST_CI_NAMESPACE $TEST_CI_NAMESPACE-mariadb || true
