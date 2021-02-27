@@ -9,8 +9,8 @@
     <!-- github -->
     <a href="https://github.com/aasaam/sms-gateway/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/aasaam/sms-gateway"></a>
     <!-- gitlab -->
-    <a href="https://gitlab.com/aasaam/sms-gateway/-/pipelines"><img alt="CI Pipeline" src="https://gitlab.com/aasaam/sms-gateway/badges/master/pipeline.svg"></a>
-    <a href="https://gitlab.com/aasaam/sms-gateway/"><img alt="Code Coverage" src="https://gitlab.com/aasaam/sms-gateway/badges/master/coverage.svg"></a>
+    <a href="https://gitlab.com/aasaam/sms-gateway/-/pipelines"><img alt="CI Pipeline" src="https://gitlab.com/aasaam/sms-gateway/badges/main/pipeline.svg"></a>
+    <a href="https://gitlab.com/aasaam/sms-gateway/"><img alt="Code Coverage" src="https://gitlab.com/aasaam/sms-gateway/badges/main/coverage.svg"></a>
   </p>
 </div>
 
