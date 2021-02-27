@@ -47,8 +47,11 @@ test:
     # run ci
     - |
       docker run --name $TEST_CI_NAMESPACE --network=$TEST_CI_NAMESPACE -e ASM_PUBLIC_APP_TEST='true' -v $(pwd)/app:/app node:15-buster-slim ls /app || true
+      docker rm -f $TEST_CI_NAMESPACE
       docker run --name $TEST_CI_NAMESPACE --network=$TEST_CI_NAMESPACE -e ASM_PUBLIC_APP_TEST='true' -v $(pwd)/app:/app node:15-buster-slim ls /app/api || true
+      docker rm -f $TEST_CI_NAMESPACE
       docker run --name $TEST_CI_NAMESPACE --network=$TEST_CI_NAMESPACE -e ASM_PUBLIC_APP_TEST='true' -v $(pwd)/app:/app node:15-buster-slim ls /app/api/ci.sh
+      docker rm -f $TEST_CI_NAMESPACE
       docker run --name $TEST_CI_NAMESPACE --network=$TEST_CI_NAMESPACE -e ASM_PUBLIC_APP_TEST='true' -v $(pwd)/app:/app node:15-buster-slim /app/api/ci.sh
 
     # gc
