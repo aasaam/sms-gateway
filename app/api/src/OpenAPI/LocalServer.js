@@ -18,7 +18,7 @@ class LocalServer {
       url: fastify.openAPIBaseURL('/local-adapter'),
       method: 'POST',
       schema: {
-        hide: true,
+        // hide: true,
         body: {
           type: 'object',
           required: ['mobile', 'message'],

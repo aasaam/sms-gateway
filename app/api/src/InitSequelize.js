@@ -10,11 +10,11 @@ class Models {
    */
   constructor({ Config }) {
     this.sequelize = new Sequelize(
-      Config.ASM_MYSQL_DATABASE,
-      Config.ASM_MYSQL_USER,
-      Config.ASM_MYSQL_PASSWORD,
+      Config.ASM_MARIADB_DATABASE,
+      Config.ASM_MARIADB_USER,
+      Config.ASM_MARIADB_PASSWORD,
       {
-        host: Config.ASM_MYSQL_HOST,
+        host: Config.ASM_MARIADB_HOST,
         dialect: 'mariadb',
         logging: false,
         // eslint-disable-next-line no-console
@@ -96,11 +96,17 @@ class Models {
           type: 'TIMESTAMP',
           allowNull: true,
         },
+        try: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: 0,
+        },
       },
       {
         indexes: [
           { type: 'FULLTEXT', name: 'message', fields: ['message'] },
           { name: 'deliveredAt', fields: ['deliveredAt'] },
+          { name: 'try', fields: ['try'] },
         ],
         timestamps: false,
       },
@@ -171,6 +177,17 @@ class Models {
       {
         indexes: [{ name: 'apiKey', fields: ['apiKey'] }],
         timestamps: false,
+        getterMethods: {
+          safeJSON() {
+            return {
+              id: this.id,
+              admin: this.admin,
+              active: this.active,
+              apiKey: this.apiKey,
+              createdAt: this.createdAt,
+            };
+          },
+        },
       },
     );
 

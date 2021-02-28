@@ -56,7 +56,7 @@ describe(__filename.replace(__dirname, ''), () => {
         [`${Config.ASM_PUBLIC_AUTH_USER_API_KEY}`]: `${users.default.apiKey}`,
       },
       payload: {
-        mobile: ['+989011230001', '+989011230002', '989011230003'],
+        mobile: ['+989011230001', '+989011230002', '+982177889922'],
         message: 'test',
       },
     });

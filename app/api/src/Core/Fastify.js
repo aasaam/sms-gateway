@@ -20,6 +20,7 @@ class Fastify {
       requestIdLogLabel: 'rid',
       disableRequestLogging: false,
       logger: false,
+      // logger: true,
       maxParamLength: 256,
     });
 

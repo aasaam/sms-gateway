@@ -4,6 +4,8 @@ class Local {
     this.description = 'For testing local just show in panel for development';
     this.port = Config.ASM_APP_PORT;
 
+    this.priority = 1000;
+
     this.active = Config.ASM_PUBLIC_ADAPTERS.map((i) =>
       i.trim().toLocaleLowerCase(),
     ).includes(this.name);
@@ -22,7 +24,7 @@ class Local {
     }
     return {
       adapter: this.name,
-      url: `http://127.0.0.1:${this.port}/api/local-adapter`,
+      url: `http://127.0.0.1:${this.port}/api/open-api/local-adapter`,
       mode: 'json',
       fetch: {
         method: 'POST',
@@ -40,14 +42,14 @@ class Local {
    * @returns {Promise<any>}
    */
   // eslint-disable-next-line class-methods-use-this
-  success({ status, headers, json }) {
+  success({ status, headers, text }) {
     const resp = {
       status,
       headers,
-      body: json,
+      body: JSON.parse(text),
     };
     return {
-      result: status === 200 && Number.isInteger(json),
+      result: status === 200 && Number.isInteger(resp.body),
       resp,
     };
   }

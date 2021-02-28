@@ -14,7 +14,9 @@ describe(__filename.replace(__dirname, ''), () => {
   });
 
   it('Local', async () => {
-    const config = new ConfigClass(ConfigSchema, {});
+    const config = new ConfigClass(ConfigSchema, {
+      ASM_PUBLIC_ADAPTERS: 'local',
+    });
     container = await initContainer(config);
     const LocalAdapter = container.resolve('LocalAdapter');
     const ok = LocalAdapter.setUp({
@@ -26,7 +28,7 @@ describe(__filename.replace(__dirname, ''), () => {
     expect(
       LocalAdapter.success({
         status: 200,
-        json: 1,
+        text: '1',
         headers: [],
       }).result,
     ).toBe(true);
@@ -34,7 +36,7 @@ describe(__filename.replace(__dirname, ''), () => {
     expect(
       LocalAdapter.success({
         status: 404,
-        json: 1,
+        text: '1',
         headers: [],
       }).result,
     ).toBe(false);

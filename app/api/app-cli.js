@@ -73,8 +73,17 @@ const { log } = console;
     Object.keys(ConfigSchema.properties).forEach((env) => {
       // eslint-disable-next-line security/detect-object-injection
       const props = ConfigSchema.properties[env];
+      const types = [`\`${props.type}\``];
+      if (props.separator) {
+        types.push(`__,__`);
+      }
+      if (ConfigSchema.required.includes(env)) {
+        types.push(`*****`);
+      }
       log(
-        `| ${env} | \`${props.type}\` | ${props.description} | \`${props.default}\` |`,
+        `| \`${env}\` | ${types.join(' ')} | ${props.description} | \`${
+          props.default
+        }\` |`,
       );
     });
   });

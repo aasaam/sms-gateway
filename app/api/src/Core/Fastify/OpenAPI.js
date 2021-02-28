@@ -41,18 +41,21 @@ class OpenAPI {
         const apiKey =
           req.headers[`${container.Config.ASM_PUBLIC_AUTH_USER_API_KEY}`] ||
           req.query[container.Config.ASM_PUBLIC_AUTH_USER_API_KEY];
+
         if (apiKey && apiKey.match(/^[a-z0-9]{16,}$/i)) {
           const user = await container.UserEntity.findOne({
             where: {
               apiKey,
               active: true,
+              admin: false,
             },
           });
           if (user && user.name) {
-            req.raw.user = user.toJSON();
+            req.raw.user = user.safeJSON;
             found = true;
           }
         }
+
         if (found === false) {
           const schemaError = new GenericResponse(403);
           return schemaError.reply(reply);

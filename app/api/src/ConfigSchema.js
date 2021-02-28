@@ -5,27 +5,7 @@ const TEST_MODE = validator.toBoolean(process.env.ASM_PUBLIC_APP_TEST, true);
 /** @type {import('json-schema').JSONSchema7} */
 const ConfigSchema = {
   type: 'object',
-  required: [
-    // public
-    'ASM_PUBLIC_APP_TEST',
-    'ASM_PUBLIC_APP_TITLE',
-    'ASM_PUBLIC_BASE_URL',
-
-    // private
-    'ASM_PM_ID',
-    'ASM_APP_INSTANCE',
-    'ASM_APP_PORT',
-    'ASM_PUBLIC_AUTH_COOKIE',
-    'ASM_PUBLIC_AUTH_USER_API_KEY',
-    'ASM_AUTH_HMAC_SECRET',
-    'ASM_AUTH_HMAC_ALG',
-
-    // resource
-    'ASM_MYSQL_DATABASE',
-    'ASM_MYSQL_USER',
-    'ASM_MYSQL_PASSWORD',
-    'ASM_MYSQL_HOST',
-  ],
+  required: ['ASM_AUTH_HMAC_SECRET'],
   properties: {
     ASM_PM_ID: {
       type: 'number',
@@ -64,7 +44,16 @@ const ConfigSchema = {
         'How is chance between 1 to n to fails will be simulate. If 10, so 1/10 equal 10 percent chance of failed',
       minimum: 2,
       maximum: 100,
+      default: 2,
+    },
+
+    ASM_PUBLIC_MAX_TRY: {
+      type: 'number',
+      description:
+        'Max try for sending message after that message will not send',
       default: 10,
+      minimum: 1,
+      maximum: 100,
     },
 
     ASM_PUBLIC_ADAPTERS: {
@@ -72,7 +61,7 @@ const ConfigSchema = {
       description: 'List of possible adapters',
       // @ts-ignore
       separator: ',',
-      default: 'local,melipayamak',
+      default: 'local',
     },
 
     ASM_PUBLIC_BASE_URL: {
@@ -130,25 +119,25 @@ const ConfigSchema = {
       maximum: 16,
     },
 
-    ASM_MYSQL_DATABASE: {
+    ASM_MARIADB_DATABASE: {
       type: 'string',
       description: 'MariaDB database',
       default: 'mariadb-db',
     },
 
-    ASM_MYSQL_USER: {
+    ASM_MARIADB_USER: {
       type: 'string',
       description: 'MariaDB username',
       default: 'mariadb-user',
     },
 
-    ASM_MYSQL_PASSWORD: {
+    ASM_MARIADB_PASSWORD: {
       type: 'string',
       description: 'MariaDB password',
       default: 'mariadb-password',
     },
 
-    ASM_MYSQL_HOST: {
+    ASM_MARIADB_HOST: {
       type: 'string',
       description: 'MariaDB host',
       default: 'sms-gateway-mariadb',
@@ -172,7 +161,7 @@ const ConfigSchema = {
       type: 'string',
     },
     ASM_MELIPAYAMAK_COUNTRIES: {
-      description: 'MeliPayamak allowed send country',
+      description: 'MeliPayamak allowed countries',
       type: 'string',
       // @ts-ignore
       separator: ',',

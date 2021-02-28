@@ -17,7 +17,8 @@ RUN cd /tmp \
   && cd /app/api \
   && npm install --production \
   && rm -rf /app/api/public \
-  && mv /app/cp/dist /app/api/public
+  && mv /app/cp/dist /app/api/public \
+  && rm -rf /app/cp
 
 STOPSIGNAL SIGTERM
 WORKDIR /app/api

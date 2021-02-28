@@ -73,9 +73,9 @@ services:
   sms-gateway-mariadb:
     container_name: sms-gateway-mariadb
     environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-mariadb-db}
-      MYSQL_USER: ${MYSQL_USER:-mariadb-user}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-mariadb-password}
+      MYSQL_DATABASE: ${ASM_MARIADB_DATABASE:-mariadb-db}
+      MYSQL_USER: ${ASM_MARIADB_USER:-mariadb-user}
+      MYSQL_PASSWORD: ${ASM_MARIADB_PASSWORD:-mariadb-password}
       MYSQL_RANDOM_ROOT_PASSWORD: "true"
     image: mariadb:10
 

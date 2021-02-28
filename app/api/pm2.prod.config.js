@@ -12,9 +12,14 @@ module.exports = {
   apps: [
     {
       name: 'http',
-      script: './index.js',
+      script: './app-http.js',
       instances,
-      max_memory_restart: '512M',
+      max_memory_restart: '384M',
+    },
+    {
+      name: 'worker',
+      script: './app-worker.js',
+      max_memory_restart: '384M',
     },
   ],
 };

@@ -8,6 +8,11 @@ class ErrorHandler {
   static setup(fastify, container) {
     const { ASM_PUBLIC_APP_TEST } = container.Config;
 
+    fastify.setNotFoundHandler((_, reply) => {
+      const e = new GenericResponse(404);
+      e.reply(reply);
+    });
+
     fastify.setErrorHandler((e, req, reply) => {
       let schemaError = new GenericResponse(e.statusCode ? e.statusCode : 500);
 
@@ -25,11 +30,6 @@ class ErrorHandler {
       }
 
       return reply.code(error.statusCode).send(error);
-    });
-
-    fastify.setNotFoundHandler((_, reply) => {
-      const e = new GenericResponse(404);
-      e.reply(reply);
     });
   }
 }

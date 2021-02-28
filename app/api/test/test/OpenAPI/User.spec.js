@@ -38,6 +38,11 @@ describe(__filename.replace(__dirname, ''), () => {
       admin: true,
     });
 
+    const userToken = await Helper.token(Config, {
+      uid: users.default.id,
+      admin: false,
+    });
+
     Object.keys(container.registrations).forEach((name) => {
       if (name.match(/OpenAPI$/)) {
         container.resolve(name);
@@ -69,6 +74,93 @@ describe(__filename.replace(__dirname, ''), () => {
           name_C_SEARCH: 'text',
           nothing_important_will_skip: 'text',
         },
+      },
+    });
+
+    expect(resp.statusCode).toBe(200);
+
+    resp = await fastify.inject({
+      url: fastify.openAPIBaseURL('/user/list'),
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+      },
+      method: 'POST',
+      payload: {
+        filters: {
+          id_C_LAST_SEEN: '1',
+          createdAt_C_START_DATETIME: new Date().toISOString(),
+          createdAt_C_END_DATETIME: new Date().toISOString(),
+          name_C_SEARCH: 'text',
+          nothing_important_will_skip: 'text',
+        },
+      },
+    });
+
+    expect(resp.statusCode).toBe(200);
+
+    resp = await fastify.inject({
+      url: fastify.openAPIBaseURL('/user/revoke-api-key'),
+      method: 'GET',
+      headers: {
+        authorization: `Bearer ${userToken}`,
+      },
+    });
+
+    expect(resp.statusCode).toBe(200);
+
+    resp = await fastify.inject({
+      url: fastify.openAPIBaseURL('/user/change-password'),
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${userToken}`,
+      },
+      payload: {
+        currentPassword: users.default.pass,
+        newPassword: users.default.pass,
+      },
+    });
+
+    expect(resp.statusCode).toBe(200);
+
+    resp = await fastify.inject({
+      url: fastify.openAPIBaseURL('/user/change-password'),
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${userToken}`,
+      },
+      payload: {
+        currentPassword: '0123456789',
+        newPassword: users.default.pass,
+      },
+    });
+
+    expect(resp.statusCode).toBe(400);
+
+    resp = await fastify.inject({
+      url: fastify.openAPIBaseURL('/admin/update-user'),
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+      },
+      payload: {
+        userId: users.default.id,
+        newPassword: users.default.pass,
+        active: true,
+        revokeApiKey: true,
+      },
+    });
+
+    expect(resp.statusCode).toBe(200);
+
+    resp = await fastify.inject({
+      url: fastify.openAPIBaseURL('/admin/update-user'),
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+      },
+      payload: {
+        userId: users.default.id,
+        active: true,
       },
     });
 

@@ -25,6 +25,7 @@ describe(__filename.replace(__dirname, ''), () => {
     Object.keys(container.registrations).forEach((name) => {
       container.resolve(name);
     });
+
     const InitData = container.resolve('InitData');
     const result = await InitData.init();
 

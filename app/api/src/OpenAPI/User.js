@@ -125,6 +125,7 @@ class User {
         });
 
         return UserEntity.findAll({
+          attributes: ['id', 'name', 'createdAt'],
           where: whereConditions,
           order: [[req.body.order, 'DESC']],
         });
@@ -145,6 +146,11 @@ class User {
             },
             active: {
               type: 'boolean',
+              default: true,
+            },
+            revokeApiKey: {
+              type: 'boolean',
+              default: false,
             },
             newPassword: {
               type: 'string',
@@ -167,8 +173,12 @@ class User {
           u.password = await UserEntity.hashPassword(req.body.newPassword);
         }
 
+        if (req.body.revokeApiKey) {
+          u.apiKey = await UserEntity.randomAPIKey();
+        }
+
         await u.save();
-        return u.toJSON();
+        return u.safeJSON;
       },
     });
 
@@ -197,7 +207,7 @@ class User {
       handler: async (req, reply) => {
         const u = await UserEntity.findOne({
           where: {
-            id: req.raw.token.id,
+            id: req.raw.token.uid,
             active: true,
           },
         });
@@ -213,7 +223,7 @@ class User {
 
         u.password = await UserEntity.hashPassword(req.body.newPassword);
         await u.save();
-        return true;
+        return u.safeJSON;
       },
     });
 
@@ -224,14 +234,14 @@ class User {
       handler: async (req) => {
         const u = await UserEntity.findOne({
           where: {
-            id: req.raw.token.id,
+            id: req.raw.token.uid,
             active: true,
           },
         });
 
         u.apiKey = await UserEntity.randomAPIKey();
         await u.save();
-        return u.toJSON();
+        return u.apiKey;
       },
     });
 
@@ -242,12 +252,12 @@ class User {
       handler: async (req) => {
         const u = await UserEntity.findOne({
           where: {
-            id: req.raw.token.id,
+            id: req.raw.token.uid,
             active: true,
           },
         });
 
-        return u.toJSON();
+        return u.safeJSON;
       },
     });
   }
