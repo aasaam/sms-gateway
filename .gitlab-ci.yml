@@ -35,7 +35,7 @@ test:
     # mariadb
     - |
       docker run --name $TEST_CI_NAMESPACE-mariadb --network=$TEST_CI_NAMESPACE \
-        -e MYSQL_DATABASE="mariadb-d" \
+        -e MYSQL_DATABASE="mariadb-db" \
         -e MYSQL_USER="mariadb-user" \
         -e MYSQL_PASSWORD="mariadb-password" \
         -e MYSQL_RANDOM_ROOT_PASSWORD="true" \
