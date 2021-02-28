@@ -21,6 +21,10 @@ test:
     - docker stop $TEST_CI_NAMESPACE $TEST_CI_NAMESPACE-mariadb || true
     - docker rm $TEST_CI_NAMESPACE $TEST_CI_NAMESPACE-mariadb || true
     - docker network rm $TEST_CI_NAMESPACE || true
+    - docker rmi $TEST_CI_NAMESPACE || true
+
+    # build
+    - docker build -f Dockerfile.ci -t $TEST_CI_NAMESPACE .
 
     # network
     - docker network create $TEST_CI_NAMESPACE
@@ -37,22 +41,9 @@ test:
         -e MYSQL_RANDOM_ROOT_PASSWORD="true" \
         -d mariadb:10
 
-    # check directory
-    - |
-      ls -la
-      ls -la $(pwd)/app
-      ls -la $(pwd)/app/api
-      echo $(pwd)/app
-
     # run ci
     - |
-      docker run --name $TEST_CI_NAMESPACE --network=$TEST_CI_NAMESPACE -e ASM_PUBLIC_APP_TEST='true' -v "$PWD/app":/app node:15-buster-slim ls /app || true
-      docker rm -f $TEST_CI_NAMESPACE
-      docker run --name $TEST_CI_NAMESPACE --network=$TEST_CI_NAMESPACE -e ASM_PUBLIC_APP_TEST='true' -v "$PWD/app":/app node:15-buster-slim ls /app/api || true
-      docker rm -f $TEST_CI_NAMESPACE
-      docker run --name $TEST_CI_NAMESPACE --network=$TEST_CI_NAMESPACE -e ASM_PUBLIC_APP_TEST='true' -v "$PWD/app":/app node:15-buster-slim ls /app/api/ci.sh
-      docker rm -f $TEST_CI_NAMESPACE
-      docker run --name $TEST_CI_NAMESPACE --network=$TEST_CI_NAMESPACE -e ASM_PUBLIC_APP_TEST='true' -v "$PWD/app":/app node:15-buster-slim /app/api/ci.sh
+      docker run --name $TEST_CI_NAMESPACE --network=$TEST_CI_NAMESPACE -e ASM_PUBLIC_APP_TEST='true' $TEST_CI_NAMESPACE /app/api/ci.sh
 
     # gc
     - docker stop $TEST_CI_NAMESPACE $TEST_CI_NAMESPACE-mariadb || true

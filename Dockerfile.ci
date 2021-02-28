@@ -1,0 +1,8 @@
+FROM node:15-buster-slim
+
+COPY ./app /app
+
+RUN ls -la / \
+  && ls -la /app \
+  && ls -la /app/api \
+  && ls -la /app/api/ci.sh
