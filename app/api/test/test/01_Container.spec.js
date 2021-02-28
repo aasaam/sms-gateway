@@ -1,5 +1,7 @@
 /* eslint-env jest */
 
+jest.setTimeout(60000);
+
 const fsp = require('fs').promises;
 
 const { initContainer } = require('../../src/Container');
