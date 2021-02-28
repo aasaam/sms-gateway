@@ -12,7 +12,7 @@ describe(__filename.replace(__dirname, ''), () => {
   const Config = {
     ASM_AUTH_HMAC_SECRET: '01234567890123456789012345678901',
     ASM_AUTH_HMAC_ALG: 'HS256',
-    ASM_AUTH_COOKIE: '__Host-AuthToken',
+    ASM_PUBLIC_AUTH_COOKIE: '__Host-AuthToken',
   };
 
   it('JWT', async () => {

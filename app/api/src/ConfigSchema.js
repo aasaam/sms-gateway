@@ -15,7 +15,7 @@ const ConfigSchema = {
     'ASM_PM_ID',
     'ASM_APP_INSTANCE',
     'ASM_APP_PORT',
-    'ASM_AUTH_COOKIE',
+    'ASM_PUBLIC_AUTH_COOKIE',
     'ASM_PUBLIC_AUTH_USER_API_KEY',
     'ASM_AUTH_HMAC_SECRET',
     'ASM_AUTH_HMAC_ALG',

@@ -134,7 +134,7 @@ class OpenAPI {
             description: 'Default access for web application',
             type: 'apiKey',
             in: 'cookie',
-            name: container.Config.ASM_AUTH_COOKIE,
+            name: container.Config.ASM_PUBLIC_AUTH_COOKIE,
           },
           userApiKey: {
             description: 'User secret',
