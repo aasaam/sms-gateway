@@ -22,7 +22,7 @@ SMS Gateway help to increase development productivity, separate your application
 
 ## Links
 
-- [Documentation](https://aasaam.github.io/sms-gateway)
+- [Documentation](https://aasaam.github.io/sms-gateway/)
 - [Development Guide](./DEVELOPMENT-GUIDE.md)
 
 <div>
