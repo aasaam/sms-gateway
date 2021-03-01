@@ -11,6 +11,7 @@
     <a href="https://gitlab.com/aasaam/sms-gateway/"><img alt="Code Coverage" src="https://gitlab.com/aasaam/sms-gateway/badges/main/coverage.svg"></a>
     <!-- docker.com -->
     <a href="https://hub.docker.com/r/aasaam/sms-gateway" target="_blank"><img src="https://img.shields.io/docker/image-size/aasaam/sms-gateway?label=docker%20image" alt="docker" /></a>
+    <a href="https://quay.io/repository/aasaam/sms-gateway" target="_blank"><img src="https://quay.io/repository/aasaam/sms-gateway/status" alt="quay.io" /></a>
     <!-- github -->
     <a href="https://github.com/aasaam/sms-gateway/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/aasaam/sms-gateway"></a>
   </p>
