@@ -64,7 +64,7 @@ build:
     - |
       docker image tag aasaam/sms-gateway quay.io/aasaam/sms-gateway
       docker push quay.io/aasaam/sms-gateway
-      docker image tag aasaam/sms-gateway docker.pkg.github.com/aasaam/sms-gateway
-      docker push docker.pkg.github.com/aasaam/sms-gateway
+      docker image tag aasaam/sms-gateway docker.pkg.github.com/aasaam/sms-gateway/sms-gateway
+      docker push docker.pkg.github.com/aasaam/sms-gateway/sms-gateway
     # remove image
     - docker rmi aasaam/sms-gateway
