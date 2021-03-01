@@ -18,7 +18,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_PASS }}
-          repository: peterevans/dockerhub-description
+          repository: aasaam/sms-gateway
 
       - name: Build GitHub Page
         run: |
