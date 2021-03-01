@@ -25,7 +25,7 @@ jobs:
         env:
           DOCKER_APIKEY: ${{ secrets.QUAY_HUB_TOKEN }}
         with:
-          destination_container_repo: quay.io/my-user/my-repo
+          destination_container_repo: quay.io/aasaam/sms-gateway
           provider: quay
           readme_file: "README.md"
 
