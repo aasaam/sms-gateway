@@ -14,6 +14,7 @@ variables:
 before_script:
   - docker login --username=$DOCKER_HUB_USER --password=$DOCKER_HUB_PASS
   - docker login --username=$QUAY_HUB_USER --password=$QUAY_HUB_PASS quay.io
+  - docker login --username=$GITHUB_HUB_USER --password=$GITHUB_HUB_PASS docker.pkg.github.com
 
 test:
   stage: test
@@ -63,5 +64,7 @@ build:
     - |
       docker image tag aasaam/sms-gateway quay.io/aasaam/sms-gateway
       docker push quay.io/aasaam/sms-gateway
+      docker image tag aasaam/sms-gateway docker.pkg.github.com/aasaam/sms-gateway
+      docker push docker.pkg.github.com/aasaam/sms-gateway
     # remove image
     - docker rmi aasaam/sms-gateway
