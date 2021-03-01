@@ -26,13 +26,14 @@ class MeliPayamak {
   }
 
   /**
-   * @param {String} country
-   * @param {String} mobile
-   * @param {String} text
+   * @param {Object} parameter
+   * @param {String} parameter.mobile
+   * @param {String} parameter.message
+   * @param {String} parameter.country
    *
    * @return  {Object|Boolean}
    */
-  setUp({ country, mobile, text }) {
+  setUp({ country, mobile, message }) {
     if (
       !this.active ||
       (this.countries.length && !this.countries.includes(country))
@@ -43,7 +44,7 @@ class MeliPayamak {
     body.append('username', this.username);
     body.append('password', this.password);
     body.append('from', this.from);
-    body.append('text', text);
+    body.append('text', message);
     body.append('to', mobile);
     body.append('isflash', 'false');
     return {
@@ -61,18 +62,18 @@ class MeliPayamak {
   }
 
   /**
-   * @param {import('node-fetch').Response} response
-   * @returns {Promise<any>}
+   * @param {import('../../addon').AdapterSuccessInput} response
+   * @returns {Promise<import('../../addon').AdapterSuccessReturn>}
    */
-  // eslint-disable-next-line class-methods-use-this
-  success({ status, headers, text }) {
-    const resp = {
+  async success({ status, headers, text }) {
+    const response = {
+      adapter: this.name,
       status,
       headers,
       body: text,
     };
     const json = JSON.parse(
-      convert.xml2json(resp.body, {
+      convert.xml2json(response.body, {
         compact: true,
         spaces: 4,
       }),
@@ -85,7 +86,7 @@ class MeliPayamak {
         '_text' in json.string &&
         // eslint-disable-next-line no-underscore-dangle
         /^[0-9]{3,}$/.test(json.string._text),
-      resp,
+      response,
     };
   }
 }

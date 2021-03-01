@@ -1,7 +1,7 @@
 /** @type {import('json-schema').JSONSchema7} */
 const schema = {
   $id: 'SendMessage',
-  title: 'SendMessage',
+  title: 'Send Message',
   description: 'Send Message request',
   type: 'object',
   required: ['mobile', 'message'],
@@ -13,17 +13,16 @@ const schema = {
           type: 'string',
           default: '',
           minLength: 6,
-          maxLength: 16,
+          maxLength: 24,
         },
         {
           type: 'array',
           default: [],
           minItems: 1,
-          maxItems: 2000,
           items: {
             type: 'string',
             minLength: 6,
-            maxLength: 16,
+            maxLength: 24,
           },
         },
       ],
@@ -32,7 +31,7 @@ const schema = {
       type: 'string',
       default: '',
       minLength: 1,
-      maxLength: 2048,
+      maxLength: 512,
     },
   },
 };

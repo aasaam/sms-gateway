@@ -8,6 +8,8 @@ const { ConfigSchema } = require('./src/ConfigSchema');
 
   /** @type {import('fastify').FastifyInstance} */
   const fastify = container.resolve('fastify');
+
+  /** @type {import('./addon').Config} */
   const Config = container.resolve('Config');
 
   Object.keys(container.registrations).forEach((name) => {

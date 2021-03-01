@@ -18,22 +18,12 @@
 
 ## Why
 
-- Increase development productivity.
-- Log independent of application layer.
-- Failover.
+SMS Gateway help to increase development productivity, separate your application from 3rd party SMS sender API providers, local development for integration testing and bulk sending without cost and also failover added multiple providers for increase sending ratio.
 
-## Adapters
+## Links
 
-| Name        | Key           | Description                                     |
-| ----------- | ------------- | ----------------------------------------------- |
-| Local       | `local`       | For testing purpose                             |
-| MeliPayamak | `melipayamak` | [melipayamak.com](https://www.melipayamak.com/) |
-
-## Features
-
-- Send local for testing during application development.
-- One interface rule them all.
-- Administrator Web UI
+- [Documentation](https://aasaam.github.io/sms-gateway)
+- [Development Guide](./DEVELOPMENT-GUIDE.md)
 
 <div>
   <p align="center">

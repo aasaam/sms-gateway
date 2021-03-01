@@ -6,32 +6,13 @@ services:
     container_name: sms-gateway-api
     depends_on:
       - sms-gateway-mariadb
-    image: node:15-buster-slim
-    working_dir: /app/api
-    volumes:
-      # development
-      - ./app/api:/app/api
-
-      # cache
-      - ./tmp/.npm:/root/.npm
+    image: aasaam/sms-gateway
     environment:
-      ASM_PUBLIC_APP_TEST: "true"
-    command: tail -f /dev/null
-
-  sms-gateway-cp:
-    container_name: sms-gateway-cp
-    depends_on:
-      - sms-gateway-api
-    image: node:15-buster-slim
-    working_dir: /app/cp
-
-    volumes:
-      # development
-      - ./app/cp:/app/cp
-
-      # cache
-      - ./tmp/.npm:/root/.npm
-    command: tail -f /dev/null
+      ASM_PUBLIC_APP_TEST: "false"
+      ASM_MARIADB_DATABASE: ${ASM_MARIADB_DATABASE:-mariadb-db}
+      ASM_MARIADB_USER: ${ASM_MARIADB_USER:-mariadb-user}
+      ASM_MARIADB_PASSWORD: ${ASM_MARIADB_PASSWORD:-mariadb-password}
+      ASM_MARIADB_HOST: ${ASM_MARIADB_HOST:-sms-gateway-mariadb}
 
   sms-gateway-nginx:
     container_name: sms-gateway-nginx
@@ -39,7 +20,8 @@ services:
     depends_on:
       - sms-gateway-api
     ports:
-      - 18888:80
+      - 80:80
+      # - 443:443
     environment:
       ASM_NGINX_WORKER_PROCESSES: ${ASM_NGINX_WORKER_PROCESSES:-2}
       ASM_NGINX_WORKER_RLIMIT_NOFILE: ${ASM_NGINX_WORKER_RLIMIT_NOFILE:-1024}
@@ -54,7 +36,8 @@ services:
       - ./nginx/common-proxy.conf:/etc/nginx/common-proxy.conf:ro
       - ./nginx/common-http.conf:/etc/nginx/common-http.conf:ro
       - ./nginx/common-protected.conf:/etc/nginx/common-protected.conf:ro
-      - ./nginx/templates/default.dev.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./nginx/templates/default.prod.conf.template:/etc/nginx/templates/default.conf.template:ro
+      # - nginx/common-server.conf # For change behind another reverse proxy server
 
   ################
   # Dependencies #
@@ -66,18 +49,9 @@ services:
       MYSQL_USER: ${ASM_MARIADB_USER:-mariadb-user}
       MYSQL_PASSWORD: ${ASM_MARIADB_PASSWORD:-mariadb-password}
       MYSQL_RANDOM_ROOT_PASSWORD: "true"
+    volumes:
+      - sms-gateway-mariadb:/var/lib/mysql
     image: mariadb:10
 
-  ##########
-  # Web UI #
-  ##########
-
-  sms-gateway-adminer:
-    container_name: sms-gateway-adminer
-    depends_on:
-      - sms-gateway-mariadb
-    image: adminer
-    environment:
-      ADMINER_DEFAULT_SERVER: sms-gateway-mariadb
-    ports:
-      - 18889:8080
+volumes:
+  sms-gateway-mariadb:

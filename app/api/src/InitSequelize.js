@@ -1,3 +1,4 @@
+const { to } = require('await-to-js');
 const crypto = require('crypto');
 
 const argon2 = require('argon2');
@@ -6,7 +7,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 class Models {
   /**
    * @param {Object} container
-   * @param {Object.<string, any>} container.Config
+   * @param {import('../addon').Config} container.Config
    */
   constructor({ Config }) {
     this.sequelize = new Sequelize(
@@ -29,10 +30,10 @@ class Models {
   }
 
   async sync() {
-    await this.User.sync();
-    await this.Local.sync();
-    await this.SendMessage.sync();
-    await this.SendMessageLog.sync();
+    await to(this.User.sync());
+    await to(this.Local.sync());
+    await to(this.SendMessage.sync());
+    await to(this.SendMessageLog.sync());
   }
 
   async connect() {
@@ -55,7 +56,7 @@ class Models {
       {
         createdAt: {
           type: 'TIMESTAMP',
-          defaultValue: this.sequelize.literal('CURRENT_TIMESTAMP'),
+          defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
           allowNull: false,
         },
         response: {
@@ -69,6 +70,7 @@ class Models {
     );
 
     this.SendMessageLog.belongsTo(this.SendMessage);
+    this.SendMessageLog.belongsTo(this.User);
   }
 
   /**
@@ -89,7 +91,7 @@ class Models {
         },
         createdAt: {
           type: 'TIMESTAMP',
-          defaultValue: this.sequelize.literal('CURRENT_TIMESTAMP'),
+          defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
           allowNull: false,
         },
         deliveredAt: {
@@ -97,9 +99,13 @@ class Models {
           allowNull: true,
         },
         try: {
-          type: DataTypes.INTEGER,
+          type: DataTypes.SMALLINT,
           allowNull: false,
           defaultValue: 0,
+        },
+        isSending: {
+          type: DataTypes.BOOLEAN,
+          defaultValue: false,
         },
       },
       {
@@ -107,6 +113,7 @@ class Models {
           { type: 'FULLTEXT', name: 'message', fields: ['message'] },
           { name: 'deliveredAt', fields: ['deliveredAt'] },
           { name: 'try', fields: ['try'] },
+          { name: 'isSending', fields: ['isSending'] },
         ],
         timestamps: false,
       },
@@ -130,7 +137,7 @@ class Models {
         },
         createdAt: {
           type: 'TIMESTAMP',
-          defaultValue: this.sequelize.literal('CURRENT_TIMESTAMP'),
+          defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
           allowNull: false,
         },
       },
@@ -170,7 +177,7 @@ class Models {
         },
         createdAt: {
           type: 'TIMESTAMP',
-          defaultValue: this.sequelize.literal('CURRENT_TIMESTAMP'),
+          defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
           allowNull: false,
         },
       },
@@ -197,6 +204,7 @@ class Models {
           resolve(hash);
         });
       });
+
     this.User.validPassword = async (hashed, rawPassword) =>
       new Promise((resolve) => {
         argon2
@@ -208,12 +216,13 @@ class Models {
             resolve(false);
           });
       });
+
     this.User.randomAPIKey = () =>
       crypto
         .createHash('sha512')
         .update([Date.now().toString(36), Math.random().toString()].join(':'))
         .digest('base64')
-        .replace(/[^a-z0-9]/gi)
+        .replace(/[^a-z0-9]/gi, '')
         .substr(0, 64);
   }
 

@@ -26,19 +26,23 @@ describe(__filename.replace(__dirname, ''), () => {
     });
 
     expect(
-      LocalAdapter.success({
-        status: 200,
-        text: '1',
-        headers: [],
-      }).result,
+      (
+        await LocalAdapter.success({
+          status: 200,
+          text: '1',
+          headers: [],
+        })
+      ).result,
     ).toBe(true);
 
     expect(
-      LocalAdapter.success({
-        status: 404,
-        text: '1',
-        headers: [],
-      }).result,
+      (
+        await LocalAdapter.success({
+          status: 404,
+          text: '1',
+          headers: [],
+        })
+      ).result,
     ).toBe(false);
 
     expect(ok).toBeTruthy();

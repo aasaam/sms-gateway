@@ -6,6 +6,7 @@ class Send {
    * @param {import('fastify').FastifyInstance} container.fastify
    * @param {import('sequelize').ModelCtor<import('sequelize').Model>} container.UserEntity
    * @param {import('../Core/JWT')} container.JWT
+   * @param {import('../../addon').Config} container.Config
    */
   constructor({ fastify, UserEntity, JWT, Config }) {
     const e400 = new GenericResponse(400);
@@ -36,6 +37,7 @@ class Send {
         response: {
           200: {
             type: 'boolean',
+            example: true,
           },
           400: e400.getSchema(),
         },

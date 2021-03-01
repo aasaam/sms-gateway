@@ -13,8 +13,10 @@ const { log } = console;
   const container = await initContainer(c);
 
   /** @type {import('sequelize').ModelCtor<import('sequelize').Model>} */
-  const Config = container.resolve('Config');
   const UserEntity = container.resolve('UserEntity');
+
+  /** @type {import('./addon').Config} */
+  const Config = container.resolve('Config');
 
   const adminUserName = Config.ASM_ADMIN_USERNAME;
 
@@ -73,19 +75,38 @@ const { log } = console;
     Object.keys(ConfigSchema.properties).forEach((env) => {
       // eslint-disable-next-line security/detect-object-injection
       const props = ConfigSchema.properties[env];
-      const types = [`\`${props.type}\``];
+      const names = [`\`${env}\``];
       if (props.separator) {
-        types.push(`__,__`);
+        names.push(`<sup>[2]</sup>`);
       }
       if (ConfigSchema.required.includes(env)) {
-        types.push(`*****`);
+        names.push(`<sup>[1]</sup>`);
       }
       log(
-        `| \`${env}\` | ${types.join(' ')} | ${props.description} | \`${
+        `| ${names.join(' ')} | ${props.type} | ${props.description} | \`${
           props.default
         }\` |`,
       );
     });
+    log('');
+    log('### Notes');
+    log('');
+    log(`1. Required to be set during deployment`);
+    log(`2. Comma separated field like \`foo,bar\``);
+    await container.dispose();
+  });
+
+  program.command('open-api-dump').action(async () => {
+    /** @type {import('fastify').FastifyInstance} */
+    const fastify = container.resolve('fastify');
+
+    const resp = await fastify.inject({
+      url: fastify.openAPIBaseURL('/docs/json'),
+      method: 'GET',
+    });
+
+    log(resp.body);
+    await container.dispose();
   });
 
   program.option('-au, --admin-user');

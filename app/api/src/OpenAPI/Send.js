@@ -19,7 +19,7 @@ class Send {
         },
         response: {
           200: {
-            type: 'boolean',
+            $ref: 'SendResult#',
           },
         },
         security: [
@@ -42,31 +42,38 @@ class Send {
           try {
             const phoneNumber = parsePhoneNumber(mobile);
             if (phoneNumber.isValid() && phoneNumber.getType() === 'MOBILE') {
-              validPhones[phoneNumber.formatInternational()] =
-                phoneNumber.country;
+              validPhones[phoneNumber.number] = phoneNumber.country;
             }
             // eslint-disable-next-line no-empty
           } catch (e) {}
         });
 
         const promises = [];
+        const results = [];
         Object.keys(validPhones).forEach((mobile) => {
           promises.push(
             new Promise((resolve) => {
-              SendMessageEntity.create({
+              const m = SendMessageEntity.create({
                 mobile,
                 // eslint-disable-next-line security/detect-object-injection
                 country: validPhones[mobile],
                 user: req.raw.user.id,
                 message: req.body.message,
-              }).then(resolve);
+              }).then(() => {
+                // eslint-disable-next-line security/detect-object-injection
+                results.push({
+                  id: m.id,
+                  mobile,
+                });
+                resolve();
+              });
             }),
           );
         });
 
         await Promise.all(promises);
 
-        return Object.keys(validPhones);
+        return results;
       },
     });
   }

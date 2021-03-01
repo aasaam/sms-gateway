@@ -11,7 +11,22 @@ const ConfigSchema = {
       type: 'number',
       description: 'PM2 process identifier',
       default: 0,
-      minimum: 0,
+    },
+
+    ASM_PUBLIC_APP_INSTANCE: {
+      type: 'number',
+      description: 'Application cluster number',
+      default: 2,
+      minimum: 1,
+      maximum: 16,
+    },
+
+    ASM_PUBLIC_SENDING_INTERVAL_MICROSECONDS: {
+      type: 'number',
+      description: 'Sending interval in microseconds for try next message.',
+      default: 1000,
+      minimum: 100,
+      maximum: 60000,
     },
 
     ASM_PUBLIC_APP_TITLE: {
@@ -59,7 +74,6 @@ const ConfigSchema = {
     ASM_PUBLIC_ADAPTERS: {
       type: 'string',
       description: 'List of possible adapters',
-      // @ts-ignore
       separator: ',',
       default: 'local',
     },
@@ -111,14 +125,6 @@ const ConfigSchema = {
       maximum: 49151,
     },
 
-    ASM_APP_INSTANCE: {
-      type: 'number',
-      description: 'Application cluster number',
-      default: 2,
-      minimum: 1,
-      maximum: 16,
-    },
-
     ASM_MARIADB_DATABASE: {
       type: 'string',
       description: 'MariaDB database',
@@ -163,7 +169,6 @@ const ConfigSchema = {
     ASM_MELIPAYAMAK_COUNTRIES: {
       description: 'MeliPayamak allowed countries',
       type: 'string',
-      // @ts-ignore
       separator: ',',
       default: 'IR',
     },

@@ -26,6 +26,7 @@ class OpenAPI {
    * @param {Object} container
    * @param {import('sequelize').ModelCtor<import('sequelize').Model>} container.UserEntity
    * @param {import('../JWT')} container.JWT
+   * @param {import('../../../addon').Config} container.Config
    */
   static setup(fastify, container) {
     OpenAPI.swaggerUI(fastify, container);
@@ -50,6 +51,7 @@ class OpenAPI {
               admin: false,
             },
           });
+
           if (user && user.name) {
             req.raw.user = user.safeJSON;
             found = true;
@@ -102,6 +104,7 @@ class OpenAPI {
    * @private
    * @param {import('fastify').FastifyInstance} fastify
    * @param {Object} container
+   * @param {import('../../../addon').Config} container.Config
    */
   static swaggerUI(fastify, container) {
     const defaultSchemaError = new GenericResponse(500);
@@ -150,7 +153,6 @@ class OpenAPI {
       consumes: ['application/json'],
       produces: ['application/json'],
       servers: [
-        // @ts-ignore
         {
           description: container.Config.ASM_PUBLIC_APP_TITLE,
           url: '/',

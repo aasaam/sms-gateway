@@ -22,7 +22,6 @@ class RateLimit {
       },
     };
 
-    // @ts-ignore
     fastify.register(fastifyRateLimit, config);
   }
 }

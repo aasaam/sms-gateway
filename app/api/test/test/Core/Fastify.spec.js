@@ -117,6 +117,7 @@ describe(__filename.replace(__dirname, ''), () => {
       },
       handler: async () => {
         const a = new Error('Failed');
+        // @ts-ignore
         a.code = 503;
         return a;
       },

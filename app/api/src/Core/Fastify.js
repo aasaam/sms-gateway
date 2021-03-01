@@ -18,11 +18,12 @@ class Fastify {
       trustProxy: true,
       requestIdHeader: 'x-request-id',
       requestIdLogLabel: 'rid',
-      disableRequestLogging: false,
-      logger: false,
+      // logger: false,
       // logger: true,
       maxParamLength: 256,
     });
+
+    ErrorHandler.setup(this.fastify, container);
 
     this.fastify.register(fastifyCookie);
     this.fastify.register(fastifyStatic, {
@@ -31,9 +32,8 @@ class Fastify {
     });
 
     Decorate.setup(this.fastify, container);
-    ErrorHandler.setup(this.fastify, container);
 
-    RateLimit.setup(this.fastify, container);
+    RateLimit.setup(this.fastify);
     OpenAPI.setup(this.fastify, container);
 
     scheme.forEach((s) => {

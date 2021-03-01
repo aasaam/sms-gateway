@@ -1,74 +1,25 @@
-const { Op, literal } = require('sequelize');
+const { Op } = require('sequelize');
 
-const { GenericResponse } = require('../Core/Fastify/GenericResponse');
-
-class LocalServer {
+class Log {
   /**
    * @param {Object} container
    * @param {import('fastify').FastifyInstance} container.fastify
-   * @param {import('sequelize').ModelCtor<import('sequelize').Model>} container.LocalEntity
-   * @param {Object.<string, any>} container.Config
+   * @param {import('sequelize').ModelCtor<import('sequelize').Model>} container.SendMessageLogEntity
+   * @param {import('sequelize').ModelCtor<import('sequelize').Model>} container.SendMessageEntity
+   * @param {import('sequelize').ModelCtor<import('sequelize').Model>} container.UserEntity
    */
-  constructor({ fastify, LocalEntity, Config }) {
-    const e403 = new GenericResponse(403);
-    const e503 = new GenericResponse(503);
-    const e502 = new GenericResponse(502);
-
-    fastify.route({
-      url: fastify.openAPIBaseURL('/local-adapter'),
-      method: 'POST',
-      schema: {
-        tags: ['local'],
-        description:
-          'Sample internal server for receive local message, only on **local** adapter',
-        body: {
-          type: 'object',
-          required: ['mobile', 'message'],
-          properties: {
-            mobile: {
-              type: 'string',
-              minLength: 6,
-              maxLength: 16,
-            },
-            message: {
-              type: 'string',
-              minLength: 1,
-              maxLength: 2048,
-            },
-          },
-        },
-      },
-      handler: async (req, reply) => {
-        if (!Config.ASM_PUBLIC_ADAPTERS.includes('local')) {
-          return e503.reply(reply);
-        }
-
-        if (req.raw.getClientIP() !== '127.0.0.1') {
-          return e403.reply(reply);
-        }
-
-        const randomFailed =
-          Math.floor(Math.random() * Config.ASM_PUBLIC_LOCAL_FAILED_CHANCE) + 1;
-
-        if (randomFailed === 1) {
-          return e502.reply(reply);
-        }
-
-        const local = await LocalEntity.create({
-          mobile: req.body.mobile,
-          message: req.body.message,
-        });
-
-        return local.id;
-      },
-    });
-
+  constructor({
+    fastify,
+    SendMessageLogEntity,
+    SendMessageEntity,
+    UserEntity,
+  }) {
     fastify.route({
       preValidation: fastify.adminTokenCheck,
-      url: fastify.openAPIBaseURL('/local-adapter/list'),
+      url: fastify.openAPIBaseURL('/admin/log'),
       method: 'POST',
       schema: {
-        tags: ['local'],
+        tags: ['log', 'admin'],
         body: {
           type: 'object',
           properties: {
@@ -105,12 +56,7 @@ class LocalServer {
                   example: '',
                   nullable: true,
                 },
-                mobile_C_SEARCH: {
-                  type: 'string',
-                  example: '',
-                  nullable: true,
-                },
-                message_C_FULL_TEXT_SEARCH: {
+                name_C_SEARCH: {
                   type: 'string',
                   example: '',
                   nullable: true,
@@ -120,11 +66,7 @@ class LocalServer {
           },
         },
       },
-      handler: async (req, reply) => {
-        if (!Config.ASM_PUBLIC_ADAPTERS.includes('local')) {
-          return e503.reply(reply);
-        }
-
+      handler: async (req) => {
         const conditions = [];
 
         if (req.body.filters) {
@@ -160,19 +102,6 @@ class LocalServer {
                     },
                   });
                   break;
-                case 'FULL_TEXT_SEARCH':
-                  conditions.push({
-                    field: typeMatch.groups.field,
-                    where: literal(
-                      `MATCH (${typeMatch.groups.field}) AGAINST('${value
-                        .trim()
-                        .replace(/[^\p{N}\p{L}\s]+/gu, ' ')
-                        .replace(/[\s]+/gu, ' ')
-                        .trim()}' IN BOOLEAN MODE)`,
-                      value,
-                    ),
-                  });
-                  break;
                 default:
                   conditions.push({
                     field: typeMatch.groups.field,
@@ -199,7 +128,16 @@ class LocalServer {
           });
         });
 
-        return LocalEntity.findAll({
+        return SendMessageLogEntity.findAll({
+          include: [
+            {
+              model: SendMessageEntity,
+            },
+            {
+              model: UserEntity,
+            },
+          ],
+          attributes: ['id', 'createdAt', 'response'],
           where: whereConditions,
           order: [[req.body.order, 'DESC']],
         });
@@ -208,4 +146,4 @@ class LocalServer {
   }
 }
 
-module.exports = LocalServer;
+module.exports = Log;

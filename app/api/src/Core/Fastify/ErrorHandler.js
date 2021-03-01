@@ -4,13 +4,14 @@ class ErrorHandler {
   /**
    * @param {import('fastify').FastifyInstance} fastify
    * @param {Object} container
+   * @param {import('../../../addon').Config} container.Config
    */
   static setup(fastify, container) {
     const { ASM_PUBLIC_APP_TEST } = container.Config;
 
     fastify.setNotFoundHandler((_, reply) => {
       const e = new GenericResponse(404);
-      e.reply(reply);
+      return e.reply(reply);
     });
 
     fastify.setErrorHandler((e, req, reply) => {

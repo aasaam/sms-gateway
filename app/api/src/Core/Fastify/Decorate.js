@@ -32,6 +32,7 @@ class Decorate {
    * @private
    * @param {import('fastify').FastifyInstance} fastify
    * @param {Object} container
+   * @param {import('../JWT')} container.JWT
    */
   static onRequest(fastify, container) {
     // http no cache by default
@@ -50,9 +51,20 @@ class Decorate {
         req.raw.token = payload;
       }
 
+      req.raw.getFirstHeader = function getFirstHeader(name) {
+        let head = this.headers[`${name}`];
+        if (head) {
+          if (Array.isArray(head)) {
+            [head] = head;
+          }
+          return head;
+        }
+        return '';
+      };
+
       // get client ip
       req.raw.getClientIP = function getClientIP() {
-        return req.headers['x-real-ip'] || req.ip;
+        return req.raw.getFirstHeader('x-real-ip') || req.ip;
       };
     });
   }

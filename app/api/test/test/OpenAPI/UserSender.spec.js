@@ -33,11 +33,6 @@ describe(__filename.replace(__dirname, ''), () => {
       await fsp.readFile('/tmp/users.json', { encoding: 'utf-8' }),
     );
 
-    const adminToken = await Helper.token(Config, {
-      uid: users.admin.id,
-      admin: true,
-    });
-
     const userToken = await Helper.token(Config, {
       uid: users.default.id,
       admin: false,
@@ -50,57 +45,8 @@ describe(__filename.replace(__dirname, ''), () => {
     });
 
     resp = await fastify.inject({
-      url: fastify.openAPIBaseURL('/user/list'),
-      headers: {
-        authorization: `Bearer ${adminToken}`,
-      },
-      payload: {},
-      method: 'POST',
-    });
-
-    expect(resp.statusCode).toBe(200);
-
-    resp = await fastify.inject({
-      url: fastify.openAPIBaseURL('/user/list'),
-      headers: {
-        authorization: `Bearer ${adminToken}`,
-      },
-      method: 'POST',
-      payload: {
-        filters: {
-          id_C_LAST_SEEN: '1',
-          createdAt_C_START_DATETIME: new Date().toISOString(),
-          createdAt_C_END_DATETIME: new Date().toISOString(),
-          name_C_SEARCH: 'text',
-          nothing_important_will_skip: 'text',
-        },
-      },
-    });
-
-    expect(resp.statusCode).toBe(200);
-
-    resp = await fastify.inject({
-      url: fastify.openAPIBaseURL('/user/list'),
-      headers: {
-        authorization: `Bearer ${adminToken}`,
-      },
-      method: 'POST',
-      payload: {
-        filters: {
-          id_C_LAST_SEEN: '1',
-          createdAt_C_START_DATETIME: new Date().toISOString(),
-          createdAt_C_END_DATETIME: new Date().toISOString(),
-          name_C_SEARCH: 'text',
-          nothing_important_will_skip: 'text',
-        },
-      },
-    });
-
-    expect(resp.statusCode).toBe(200);
-
-    resp = await fastify.inject({
       url: fastify.openAPIBaseURL('/user/revoke-api-key'),
-      method: 'GET',
+      method: 'PATCH',
       headers: {
         authorization: `Bearer ${userToken}`,
       },
@@ -110,7 +56,7 @@ describe(__filename.replace(__dirname, ''), () => {
 
     resp = await fastify.inject({
       url: fastify.openAPIBaseURL('/user/change-password'),
-      method: 'POST',
+      method: 'PUT',
       headers: {
         authorization: `Bearer ${userToken}`,
       },
@@ -124,7 +70,7 @@ describe(__filename.replace(__dirname, ''), () => {
 
     resp = await fastify.inject({
       url: fastify.openAPIBaseURL('/user/change-password'),
-      method: 'POST',
+      method: 'PUT',
       headers: {
         authorization: `Bearer ${userToken}`,
       },
@@ -135,35 +81,5 @@ describe(__filename.replace(__dirname, ''), () => {
     });
 
     expect(resp.statusCode).toBe(400);
-
-    resp = await fastify.inject({
-      url: fastify.openAPIBaseURL('/admin/update-user'),
-      method: 'POST',
-      headers: {
-        authorization: `Bearer ${adminToken}`,
-      },
-      payload: {
-        userId: users.default.id,
-        newPassword: users.default.pass,
-        active: true,
-        revokeApiKey: true,
-      },
-    });
-
-    expect(resp.statusCode).toBe(200);
-
-    resp = await fastify.inject({
-      url: fastify.openAPIBaseURL('/admin/update-user'),
-      method: 'POST',
-      headers: {
-        authorization: `Bearer ${adminToken}`,
-      },
-      payload: {
-        userId: users.default.id,
-        active: true,
-      },
-    });
-
-    expect(resp.statusCode).toBe(200);
   });
 });

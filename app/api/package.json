@@ -38,7 +38,6 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "start:dev": "nodemon",
     "test:cover": "jest --detectOpenHandles --runInBand --collectCoverage",
     "test": "jest --detectOpenHandles --runInBand"
   },
@@ -58,15 +57,15 @@
     "eslint-plugin-sonarjs": "^0",
     "eslint-plugin-sql": "^1",
     "jest": "^26",
-    "json-schema": "^0.2.3",
-    "nodemon": "^2.0.7",
+    "json-schema": "^0",
+    "pm2": "^4",
     "prettier": "^2",
     "typescript": "^4"
   },
   "dependencies": {
     "@aasaam/information": "^0",
     "argon2": "^0",
-    "async": "^3.2.0",
+    "async": "^3",
     "await-to-js": "^2",
     "awilix": "^4",
     "commander": "^7",
@@ -83,7 +82,6 @@
     "mariadb": "^2",
     "node-fetch": "^2",
     "sequelize": "^6",
-    "tiny-lru": "^7",
     "validator": "^10",
     "xml-js": "^1"
   }

@@ -12,9 +12,10 @@ class Local {
   }
 
   /**
-   * @param {String} country
-   * @param {String} mobile
-   * @param {String} text
+   * @param {Object} parameter
+   * @param {String} parameter.mobile
+   * @param {String} parameter.message
+   * @param {String} parameter.country
    *
    * @return  {Object|Boolean}
    */
@@ -38,19 +39,19 @@ class Local {
   }
 
   /**
-   * @param {import('node-fetch').Response} response
-   * @returns {Promise<any>}
+   * @param {import('../../addon').AdapterSuccessInput} response
+   * @returns {Promise<import('../../addon').AdapterSuccessReturn>}
    */
-  // eslint-disable-next-line class-methods-use-this
-  success({ status, headers, text }) {
-    const resp = {
+  async success({ status, headers, text }) {
+    const response = {
+      adapter: this.name,
       status,
       headers,
       body: JSON.parse(text),
     };
     return {
-      result: status === 200 && Number.isInteger(resp.body),
-      resp,
+      result: status === 200 && Number.isInteger(response.body),
+      response,
     };
   }
 }

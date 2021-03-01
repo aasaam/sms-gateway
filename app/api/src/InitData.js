@@ -12,8 +12,11 @@ class InitSequelize {
     const defaultUserName = this.Config.ASM_DEFAULT_USERNAME;
 
     const adminRawPassword = this.UserEntity.randomAPIKey().substr(0, 24);
+
     const adminPassword = await this.UserEntity.hashPassword(adminRawPassword);
+
     const defaultRawPassword = this.UserEntity.randomAPIKey().substr(0, 24);
+
     const defaultPassword = await this.UserEntity.hashPassword(
       defaultRawPassword,
     );
@@ -61,6 +64,7 @@ class InitSequelize {
       });
       log('='.repeat(80));
       log(`Default user login data`);
+
       log(`id: ${u.id}`);
       log(`user: ${defaultUserName}`);
       log(`pass: ${defaultRawPassword}`);

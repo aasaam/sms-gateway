@@ -11,6 +11,7 @@ const { ConfigSchema } = require('./src/ConfigSchema');
 const { log: consoleLog } = console;
 
 (async function start() {
+  await new Promise((r) => setTimeout(r, 10000));
   const c = new ConfigClass(ConfigSchema, {});
   const container = await initContainer(c);
 
@@ -40,20 +41,31 @@ const { log: consoleLog } = console;
   forever(
     // eslint-disable-next-line sonarjs/cognitive-complexity
     async () => {
-      await new Promise((r) => setTimeout(r, 1000));
-      // find message that not deli
+      // interval wait for next message
+      await new Promise((r) =>
+        setTimeout(r, Config.ASM_PUBLIC_SENDING_INTERVAL_MICROSECONDS),
+      );
+
+      // find message that [not delivered, not isSending and no much try]
       const sendMessage = await SendMessageEntity.findOne({
         where: {
           deliveredAt: {
-            [Op.lte]: new Date(0),
+            [Op.lt]: new Date(0),
           },
+          isSending: false,
           try: {
             [Op.lte]: Config.ASM_PUBLIC_MAX_TRY,
           },
         },
         order: [['try', 'ASC']],
       });
+
       if (sendMessage) {
+        // is sending now
+        // @ts-ignore
+        sendMessage.isSending = true;
+        await sendMessage.save();
+
         const tryEachFunctions = [];
         adapters.forEach((adapter) => {
           tryEachFunctions.push(async () => {
@@ -76,6 +88,7 @@ const { log: consoleLog } = console;
                 response: JSON.stringify(result.resp),
                 SendMessageId: sendMessage.id,
               });
+
               if (result.result === true) {
                 tryNext = false;
               }
@@ -83,11 +96,13 @@ const { log: consoleLog } = console;
             sendMessage.try += 1;
             if (tryNext === false) {
               sendMessage.deliveredAt = new Date();
+              sendMessage.isSending = false;
               await sendMessage.save();
               return true;
             }
+            sendMessage.isSending = false;
             await sendMessage.save();
-            return new Error('Next');
+            return new Error('Try next adapter');
           });
         });
         await new Promise((resolve) => {
@@ -99,7 +114,6 @@ const { log: consoleLog } = console;
           });
         });
       }
-      await new Promise((r) => setTimeout(r, 1000));
     },
     (e) => {
       consoleLog(e);

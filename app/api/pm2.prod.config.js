@@ -1,5 +1,5 @@
-let instances = process.env.ASM_APP_INSTANCE
-  ? parseInt(process.env.ASM_APP_INSTANCE, 10)
+let instances = process.env.ASM_PUBLIC_APP_INSTANCE
+  ? parseInt(process.env.ASM_PUBLIC_APP_INSTANCE, 10)
   : 2;
 
 if (instances > 16) {
@@ -19,6 +19,7 @@ module.exports = {
     {
       name: 'worker',
       script: './app-worker.js',
+      instances,
       max_memory_restart: '384M',
     },
   ],
