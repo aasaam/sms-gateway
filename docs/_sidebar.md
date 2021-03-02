@@ -2,4 +2,3 @@
 
 - [Home](/)
 - [Installation](installation.md)
-- [API](api.md)

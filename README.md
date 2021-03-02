@@ -10,8 +10,8 @@
     <a href="https://gitlab.com/aasaam/sms-gateway/"><img alt="Code Coverage" src="https://gitlab.com/aasaam/sms-gateway/badges/main/coverage.svg"></a>
     <a href="https://hub.docker.com/r/aasaam/sms-gateway" target="_blank"><img src="https://img.shields.io/docker/image-size/aasaam/sms-gateway?label=docker%20image" alt="docker" /></a>
     <a href="https://quay.io/repository/aasaam/sms-gateway" target="_blank"><img src="https://img.shields.io/badge/docker%20image-quay.io-blue" alt="quay.io" /></a>
-    <a href="https://github.com/aasaam/sms-gateway/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/aasaam/sms-gateway"></a>
     <a href="https://aasaam.github.io/sms-gateway/" target="_blank"><img src="https://github.com/aasaam/sms-gateway/actions/workflows/docs.yml/badge.svg" alt="docs" /></a>
+    <a href="https://github.com/aasaam/sms-gateway/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/aasaam/sms-gateway"></a>
   </p>
 </div>
 
