@@ -48,6 +48,17 @@ describe(__filename.replace(__dirname, ''), () => {
     });
 
     expect(resp.statusCode).toBe(200);
+    expect(resp.payload).not.toBeFalsy();
+
+    payload = JSON.parse(resp.payload);
+    expect(payload).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: expect.any(Number),
+          mobile: expect.any(String),
+        }),
+      ]),
+    );
 
     resp = await fastify.inject({
       url: fastify.openAPIBaseURL('/send'),
@@ -62,5 +73,16 @@ describe(__filename.replace(__dirname, ''), () => {
     });
 
     expect(resp.statusCode).toBe(200);
+    expect(resp.payload).not.toBeFalsy();
+
+    payload = JSON.parse(resp.payload);
+    expect(payload).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: expect.any(Number),
+          mobile: expect.any(String),
+        }),
+      ]),
+    );
   });
 });

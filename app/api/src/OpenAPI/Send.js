@@ -53,16 +53,16 @@ class Send {
         Object.keys(validPhones).forEach((mobile) => {
           promises.push(
             new Promise((resolve) => {
-              const m = SendMessageEntity.create({
+              SendMessageEntity.create({
                 mobile,
                 // eslint-disable-next-line security/detect-object-injection
                 country: validPhones[mobile],
                 user: req.raw.user.id,
                 message: req.body.message,
-              }).then(() => {
+              }).then((message) => {
                 // eslint-disable-next-line security/detect-object-injection
                 results.push({
-                  id: m.id,
+                  id: message.id,
                   mobile,
                 });
                 resolve();

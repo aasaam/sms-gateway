@@ -85,7 +85,7 @@ const { log: consoleLog } = console;
               });
 
               await SendMessageLogEntity.create({
-                response: JSON.stringify(result.resp),
+                response: JSON.stringify(result.response),
                 SendMessageId: sendMessage.id,
               });
 
