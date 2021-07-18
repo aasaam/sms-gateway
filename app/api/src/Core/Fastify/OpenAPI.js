@@ -3,7 +3,7 @@ const { Organization } = require('@aasaam/information');
 
 const fastifyOpenAPI = require('fastify-oas');
 
-const { GenericResponse } = require('./GenericResponse.js');
+const { GenericResponse } = require('./GenericResponse');
 
 const description = `
 ### Disclaimer

@@ -1,4 +1,4 @@
-const { GenericResponse } = require('../Core/Fastify/GenericResponse.js');
+const { GenericResponse } = require('../Core/Fastify/GenericResponse');
 
 class Send {
   /**

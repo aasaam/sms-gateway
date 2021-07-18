@@ -2,10 +2,10 @@ const { fastify } = require('fastify');
 const fastifyCookie = require('fastify-cookie');
 const fastifyStatic = require('fastify-static').default;
 
-const { Decorate } = require('./Fastify/Decorate.js');
-const { ErrorHandler } = require('./Fastify/ErrorHandler.js');
-const { OpenAPI } = require('./Fastify/OpenAPI.js');
-const { RateLimit } = require('./Fastify/RateLimit.js');
+const { Decorate } = require('./Fastify/Decorate');
+const { ErrorHandler } = require('./Fastify/ErrorHandler');
+const { OpenAPI } = require('./Fastify/OpenAPI');
+const { RateLimit } = require('./Fastify/RateLimit');
 
 const scheme = require('../Scheme');
 

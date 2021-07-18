@@ -58,7 +58,8 @@ class InitSequelize {
       const apiKey =
         this.Config.ASM_PUBLIC_APP_TEST !== true
           ? await this.UserEntity.randomAPIKey()
-          : '0'.repeat(24);
+          : '0'.repeat(64);
+
       const u = await this.UserEntity.create({
         name: defaultUserName,
         admin: false,

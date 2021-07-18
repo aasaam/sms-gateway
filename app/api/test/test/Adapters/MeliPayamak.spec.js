@@ -32,12 +32,14 @@ describe(__filename.replace(__dirname, ''), () => {
 
     expect(ok).toBeTruthy();
 
+    const testXML =
+      '<?xml version="1.0" encoding="utf-8"?><string xmlns="http://tempuri.org/">5300000000000000000</string>';
+
     expect(
       (
         await MeliPayamakAdapter.success({
           status: 200,
-          text:
-            '<?xml version="1.0" encoding="utf-8"?><string xmlns="http://tempuri.org/">5300000000000000000</string>',
+          text: testXML,
           headers: [],
         })
       ).result,
