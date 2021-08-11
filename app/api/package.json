@@ -42,7 +42,7 @@
     "test": "jest --detectOpenHandles --runInBand"
   },
   "devDependencies": {
-    "@types/jest": "^26",
+    "@types/jest": "^27",
     "@types/json-schema": "^7",
     "@types/node": "^16",
     "eslint": "^7",
