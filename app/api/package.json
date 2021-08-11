@@ -67,7 +67,7 @@
     "argon2": "^0",
     "async": "^3",
     "await-to-js": "^3",
-    "awilix": "^4",
+    "awilix": "^5",
     "commander": "^8",
     "cookie": "^0",
     "env-schema": "^3",
