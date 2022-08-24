@@ -44,7 +44,7 @@
   "devDependencies": {
     "@types/jest": "^27",
     "@types/json-schema": "^7",
-    "@types/node": "^16",
+    "@types/node": "^18",
     "eslint": "^7",
     "eslint-config-airbnb": "^18",
     "eslint-config-prettier": "^8",
