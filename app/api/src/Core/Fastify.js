@@ -1,6 +1,6 @@
 const { fastify } = require('fastify');
-const fastifyCookie = require('fastify-cookie');
-const fastifyStatic = require('fastify-static').default;
+const fastifyCookie = require('@fastify/cookie');
+const fastifyStatic = require('@fastify/static').default;
 
 const { Decorate } = require('./Fastify/Decorate');
 const { ErrorHandler } = require('./Fastify/ErrorHandler');
