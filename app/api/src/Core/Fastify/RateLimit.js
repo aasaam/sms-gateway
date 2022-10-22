@@ -1,11 +1,11 @@
-const fastifyRateLimit = require('fastify-rate-limit');
+const fastifyRateLimit = require('@fastify/rate-limit');
 
 class RateLimit {
   /**
    * @param {import('fastify').FastifyInstance} fastify
    */
   static setup(fastify) {
-    /** @type {import('fastify-rate-limit').RateLimitPluginOptions} */
+    /** @type {import('@fastify/rate-limit').RateLimitPluginOptions} */
     const config = {
       global: false,
       max: 3,
