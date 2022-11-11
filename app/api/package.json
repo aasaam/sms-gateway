@@ -80,7 +80,7 @@
     "libphonenumber-js": "^1",
     "lodash": "^4",
     "mariadb": "^2",
-    "node-fetch": "^2",
+    "node-fetch": "^3",
     "sequelize": "^6",
     "validator": "^13",
     "xml-js": "^1"
