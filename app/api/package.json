@@ -73,7 +73,7 @@
     "awilix": "^5",
     "commander": "^8",
     "cookie": "^0",
-    "env-schema": "^3",
+    "env-schema": "^5",
     "fastify": "^3",
     "fastify-oas": "^3",
     "jose": "^3",
