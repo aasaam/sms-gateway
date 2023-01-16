@@ -71,7 +71,7 @@
     "async": "^3",
     "await-to-js": "^3",
     "awilix": "^5",
-    "commander": "^8",
+    "commander": "^10",
     "cookie": "^0",
     "env-schema": "^3",
     "fastify": "^3",
