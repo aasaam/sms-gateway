@@ -76,7 +76,7 @@
     "env-schema": "^3",
     "fastify": "^3",
     "fastify-oas": "^3",
-    "jose": "^3",
+    "jose": "^4",
     "libphonenumber-js": "^1",
     "lodash": "^4",
     "mariadb": "^2",
