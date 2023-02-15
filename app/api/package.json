@@ -79,7 +79,7 @@
     "jose": "^3",
     "libphonenumber-js": "^1",
     "lodash": "^4",
-    "mariadb": "^2",
+    "mariadb": "^3",
     "node-fetch": "^2",
     "sequelize": "^6",
     "validator": "^13",
